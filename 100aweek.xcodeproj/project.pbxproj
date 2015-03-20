@@ -17,6 +17,8 @@
 		FA80DEDD1AB9BE6200361C0C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA80DEDB1AB9BE6200361C0C /* LaunchScreen.xib */; };
 		FA80DEE91AB9BE6200361C0C /* _00aweekTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA80DEE81AB9BE6200361C0C /* _00aweekTests.swift */; };
 		FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */; };
+		FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */; };
+		FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		FA80DEE71AB9BE6200361C0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA80DEE81AB9BE6200361C0C /* _00aweekTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _00aweekTests.swift; sourceTree = "<group>"; };
 		FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimingViewCell.swift; sourceTree = "<group>"; };
+		FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewCell.swift; sourceTree = "<group>"; };
+		FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,7 +92,7 @@
 				FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */,
 				FA80DED41AB9BE6200361C0C /* ViewController.swift */,
 				FA36A7571ABB60C700A7DAEC /* HistoryViewController.swift */,
-				FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */,
+				FAFFA6F31ABC90B60011FF25 /* HistoryTable Classes */,
 				FA80DED61AB9BE6200361C0C /* Main.storyboard */,
 				FA80DED91AB9BE6200361C0C /* Images.xcassets */,
 				FA80DEDB1AB9BE6200361C0C /* LaunchScreen.xib */,
@@ -122,6 +126,16 @@
 				FA80DEE71AB9BE6200361C0C /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FAFFA6F31ABC90B60011FF25 /* HistoryTable Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */,
+				FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */,
+				FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */,
+			);
+			name = "HistoryTable Classes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,9 +240,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA80DED51AB9BE6200361C0C /* ViewController.swift in Sources */,
+				FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */,
 				FA80DED01AB9BE6200361C0C /* AppDelegate.swift in Sources */,
 				FA80DED31AB9BE6200361C0C /* _00aweek.xcdatamodeld in Sources */,
 				FA36A7581ABB60C700A7DAEC /* HistoryViewController.swift in Sources */,
+				FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */,
 				FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */,
 				FA36A7231ABB556C00A7DAEC /* TimeEntry.swift in Sources */,
 			);

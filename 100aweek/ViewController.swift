@@ -24,11 +24,10 @@ class ViewController: UIViewController {
     var startTime = NSTimeInterval()
     var pauseTime = NSTimeInterval()
     var savedTime = NSTimeInterval()
-    var dif = NSTimeInterval()
+    var pausedTime = NSTimeInterval()
     var timer = NSTimer()
     var pauseCount = 0
     var paused = false
-    var resumed = false
     var stopped = false
     var state = State.Stopped
 
@@ -38,12 +37,14 @@ class ViewController: UIViewController {
         
     }
     
+    // MARK: - Actions
+    
     @IBAction func start(sender: AnyObject) {
         state = .Started
-        println("Start")
-        startTimer()
-        stopButton.setTitle("stop", forState: .Normal)
         stopped = false
+        stopButton.setTitle("stop", forState: .Normal)
+        
+        startTimer()
     }
     
     @IBAction func pause(sender: AnyObject) {
@@ -51,29 +52,28 @@ class ViewController: UIViewController {
         case .Started, .Resumed:
             timer.invalidate()
             pauseCount++
-            state = .Paused
-            println("Paused")
-            paused = true
-            startTimer()
             
+            state = .Paused
+            paused = true
             pauseButton.setTitle("resume", forState: .Normal)
+            
+            startTimer()
         case .Paused:
             timer.invalidate()
             state = .Resumed
-            println("Resumed")
-            startTimer()
-            
             pauseButton.setTitle("pause", forState: .Normal)
+            
+            startTimer()
         default:
-            println()
+            break
         }
     }
     
     @IBAction func stop(sender: AnyObject) {
         state = .Stopped
         if stopped {
-            timeLabel.text = "00 : 00 : 00 : 00"
-            pausedLabel.text = "00 : 00 : 00 : 00"
+            timeLabel.text = "0 : 00 : 00 : 00"
+            pausedLabel.text = "0 : 00 : 00 : 00"
             sender.setTitle("stop", forState: .Normal)
             stopped = false
         }
@@ -81,50 +81,66 @@ class ViewController: UIViewController {
             timer.invalidate()
             endDate = NSDate()
             saveEntry()
-            savedTime = 0
-            dif = 0
-            pauseCount = 0
+            
             self.pauseButton.hidden = true
             self.startButton.hidden = false
             sender.setTitle("reset", forState: .Normal)
+            
             paused = false
             stopped = true
+            
+            savedTime = 0
+            pausedTime = 0
+            pauseCount = 0
         }
-                
     }
+    
+    @IBAction func historyTapped(sender: UIButton) {
+    }
+    
+    @IBAction func settingsTapped(sender: UIButton) {
+    }
+    
+    @IBAction func unwindToTimer(segue: UIStoryboardSegue) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    // MARK: - Timers
     
     func startTimer() {
         switch state {
         case .Started:
             timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+            
             startTime = NSDate.timeIntervalSinceReferenceDate()
             startDate = NSDate()
+            
             startButton.hidden = true
             pauseButton.hidden = false
         case .Paused:
             timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
+            
             pauseTime = NSDate.timeIntervalSinceReferenceDate()
         case .Resumed:
             timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
         default:
-            println()
+            break
         }
     }
     
     func updateTime() {
-        
         var currentTime = NSDate.timeIntervalSinceReferenceDate()
         var elapsedTime: NSTimeInterval = currentTime - startTime
         duration = elapsedTime
         
-        elapsedTime -= dif
-        //println("Elapsed: \(elapsedTime), Saved: \(savedTime)")
+        elapsedTime -= pausedTime
+        
         if paused {
+            let dif = elapsedTime - savedTime
+            pausedTime += dif
+            elapsedTime -= pausedTime
+            
             paused = false
-            let difera = elapsedTime - savedTime
-            dif += difera
-            elapsedTime -= dif
-            println(dif)
         }
         savedTime = elapsedTime
         
@@ -135,7 +151,7 @@ class ViewController: UIViewController {
         let currentTime = NSDate.timeIntervalSinceReferenceDate()
         var elapsedTime: NSTimeInterval = currentTime - pauseTime
         
-        elapsedTime += dif
+        elapsedTime += pausedTime
         
         pausedLabel.text = updateLabel(elapsedTime)
     }
@@ -154,31 +170,13 @@ class ViewController: UIViewController {
         
         let fraction = Int(interval * 100)
         
-        let strHours = hours > 9 ? String(hours) : "0" + String(hours)
+        let strHours = hours > 9 ? String(hours) : String(hours)
         let strMinutes = minutes > 9 ? String(minutes) : "0" + String(minutes)
         let strSeconds = seconds > 9 ? String(seconds) : "0" + String(seconds)
         let strFraction = fraction > 9 ? String(fraction) : "0" + String(fraction)
         
         let time = "\(strHours) : \(strMinutes) : \(strSeconds) : \(strFraction)"
         return time
-    }
-    
-    func saveEntry() {
-        let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-        let startDateForm = startDate
-        let endDateForm = endDate
-        let durationTime = updateLabel(duration)
-        let timeActive = timeLabel.text
-        let timePaused = pausedLabel.text
-        let countOfPause = NSNumber(integer: pauseCount)
-        
-        let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startTime: startDateForm, _endTime: endDateForm, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
-        println(ret)
-        
-        var error: NSError?
-        if (managedObjectContext?.save(&error) != nil) {
-            println(error?.localizedDescription)
-        }
     }
     
     enum State {
@@ -188,20 +186,35 @@ class ViewController: UIViewController {
         case Stopped
     }
 
-    @IBAction func historyTapped(sender: UIButton) {
-    }
     
-    @IBAction func settingsTapped(sender: UIButton) {
-    }
+    // MARK: CoreData
     
-    @IBAction func unwindToTimer(segue: UIStoryboardSegue) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func saveEntry() {
+        let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+        
+        // Date Format
+        let dateFormat = NSDateFormatter()
+        dateFormat.dateFormat = "EEE d MMM, yy"
+        
+        // Time Format
+        let timeFormat = NSDateFormatter()
+        timeFormat.dateFormat = "H:mm:ss"
+        
+        let startDateF = dateFormat.stringFromDate(startDate)
+        let startTimeF = timeFormat.stringFromDate(startDate)
+        let endTimeF = timeFormat.stringFromDate(endDate)
+        
+        let durationTime = updateLabel(duration)
+        let timeActive = timeLabel.text
+        let timePaused = pausedLabel.text
+        let countOfPause = NSNumber(integer: pauseCount)
+        
+        let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDateF, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
+        
+        var error: NSError?
+        if (managedObjectContext?.save(&error) != nil) {
+            println(error?.localizedDescription)
+        }
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 
