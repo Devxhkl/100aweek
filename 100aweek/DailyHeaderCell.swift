@@ -1,25 +1,26 @@
 //
-//  HeaderViewCell.swift
+//  DailyHeaderCell.swift
 //  100aweek
 //
-//  Created by Zel Marko on 20/03/15.
+//  Created by Zel Marko on 21/03/15.
 //  Copyright (c) 2015 Zel Marko. All rights reserved.
 //
 
 import UIKit
 
-protocol HeaderCellDelegate {
-    func openSection(sectionHeaderCell: HeaderViewCell, section: Int)
-    func closeSection(sectionHeaderCell: HeaderViewCell, section: Int)
+protocol DailyHeadDelegate {
+    func openSection(sectionHeaderCell: DailyHeaderCell, section: Int)
+    func closeSection(sectionHeaderCell: DailyHeaderCell, section: Int)
+
 }
 
-class HeaderViewCell: UITableViewCell, UIGestureRecognizerDelegate {
+class DailyHeaderCell: UITableViewCell, UIGestureRecognizerDelegate {
 
-    @IBOutlet weak var weekLabel: UILabel!
-    @IBOutlet weak var ratingLabel: UILabel!
-   
+    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var rateLabel: UILabel!
+    
     var isOpen = false
-    var delegate: HeaderCellDelegate?
+    var delegate: DailyHeadDelegate?
     var section: Int!
     
     override func awakeFromNib() {
@@ -41,5 +42,4 @@ class HeaderViewCell: UITableViewCell, UIGestureRecognizerDelegate {
             isOpen = !isOpen
         }
     }
-    
-    }
+}

@@ -72,8 +72,8 @@ class ViewController: UIViewController {
     @IBAction func stop(sender: AnyObject) {
         state = .Stopped
         if stopped {
-            timeLabel.text = "0 : 00 : 00 : 00"
-            pausedLabel.text = "0 : 00 : 00 : 00"
+            timeLabel.text = "0 : 00 : 00"
+            pausedLabel.text = "0 : 00 : 00                                   "
             sender.setTitle("stop", forState: .Normal)
             stopped = false
         }
@@ -102,7 +102,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func unwindToTimer(segue: UIStoryboardSegue) {
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
 
     // MARK: - Timers
@@ -168,14 +167,10 @@ class ViewController: UIViewController {
         let seconds = Int(interval)
         interval -= NSTimeInterval(seconds)
         
-        let fraction = Int(interval * 100)
-        
-        let strHours = hours > 9 ? String(hours) : String(hours)
         let strMinutes = minutes > 9 ? String(minutes) : "0" + String(minutes)
         let strSeconds = seconds > 9 ? String(seconds) : "0" + String(seconds)
-        let strFraction = fraction > 9 ? String(fraction) : "0" + String(fraction)
         
-        let time = "\(strHours) : \(strMinutes) : \(strSeconds) : \(strFraction)"
+        let time = "\(hours) : \(strMinutes) : \(strSeconds)"
         return time
     }
     
@@ -194,7 +189,7 @@ class ViewController: UIViewController {
         
         // Date Format
         let dateFormat = NSDateFormatter()
-        dateFormat.dateFormat = "EEE d MMM, yy"
+        dateFormat.dateFormat = "EEE d MMM"
         
         // Time Format
         let timeFormat = NSDateFormatter()
@@ -209,7 +204,7 @@ class ViewController: UIViewController {
         let timePaused = pausedLabel.text
         let countOfPause = NSNumber(integer: pauseCount)
         
-        let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDateF, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
+        let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
         
         var error: NSError?
         if (managedObjectContext?.save(&error) != nil) {

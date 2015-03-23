@@ -10,9 +10,9 @@ import UIKit
 import CoreData
 
 class HistoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, HeaderCellDelegate {
-
-    @IBOutlet weak var timerLabel: UILabel!
+    
     @IBOutlet weak var historyTable: UITableView!
+    @IBOutlet weak var timerLabel: UILabel!
     
     var sectionInfoArray = [SectionInfo]()
     
@@ -34,16 +34,17 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         
             let fetched = fetchResults!
             
-            var startDates = [String]()
+            var startDates = [Int]()
             for entry in fetched {
                 let date = entry.startDate
-                startDates.append(date)
+                let weekOfYear = getWeekOfYear(date)
+                startDates.append(weekOfYear)
             }
             for date in startDates {
                 var filter = Dictionary<String, Int>()
                 var len = startDates.count
                 for var index = 0; index < len; ++index {
-                    var value = startDates[index]
+                    var value = "\(startDates[index])"
                     if filter[value] != nil {
                         startDates.removeAtIndex(index--)
                         len--
@@ -53,7 +54,21 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
                     }
                 }
             }
-            for date in startDates {
+
+            for weekNumber in startDates {
+                let sectionInfo = SectionInfo()
+                sectionInfo.isOpen = false
+                
+                for entry in fetched {
+                    let weekNum = getWeekOfYear(entry.startDate)
+                    if weekNum == weekNumber {
+                        sectionInfo.timings.append(entry)
+                    }
+                }
+                sectionInfoArray.append(sectionInfo)
+            }
+            /*
+                        for date in startDates {
                 let sectionInfo = SectionInfo()
                 sectionInfo.isOpen = false
                 
@@ -64,6 +79,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
                 sectionInfoArray.append(sectionInfo)
             }
+*/
         }
         
     }
@@ -76,23 +92,22 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = sectionInfoArray[section]
-        let entryCount = sectionInfo.timings.count
         
-        return sectionInfo.isOpen ? entryCount : 0
+        return sectionInfo.isOpen ? 1 : 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as TimingViewCell
         
         let sectionInfo = sectionInfoArray[indexPath.section]
-        let entry = sectionInfo.timings[indexPath.row]
+        let times = sectionInfo.getSummedTimes(sectionInfo.timings)
         
-        cell.startTimeLabel.text = "\(entry.startTime)"
-        cell.endTimeLabel.text = "\(entry.endTime)"
-        cell.activeTimeLabel.text = entry.activeTime
-        cell.pausedTimeLabel.text = entry.pausedTime
-        cell.durationTimeLabel.text = entry.duration
-        cell.pausesCountLabel.text = "\(entry.pauseCount)"
+        cell.activeLabel.text = times[0]
+        cell.pausedLabel.text = times[1]
+        cell.pausesLabel.text = times[2]
+        
+        let forRate = times[0].componentsSeparatedByString(" : ")
+        cell.rateLabel.text = "\(forRate[0]) %"
         
         return cell
     }
@@ -100,14 +115,13 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableCellWithIdentifier("Header") as HeaderViewCell
         header.frame = CGRect(x: header.frame.origin.x, y: header.frame.origin.y, width: historyTable.frame.width, height: header.frame.height)
-        
         header.delegate = self
         
         let sectionInfo = sectionInfoArray[section]
         sectionInfo.headerCell = header
         
-        header.dateLabel.text = sectionInfo.timings[0].startDate
-        header.durationLabel.text = sectionInfo.timings[0].duration
+        header.weekLabel.text = sectionInfo.getStartEndOFWeek(sectionInfo.timings[0].startDate)
+        header.ratingLabel.text = sectionInfo.getSuccessfullTimings(sectionInfo.timings)
         header.section = section
         
         let view = UIView(frame: header.frame)
@@ -124,13 +138,10 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         let sectionInfo = sectionInfoArray[section]
         sectionInfo.isOpen = true
         
-        let entryCount = sectionInfo.timings.count
         var indexPathsToInsert = [NSIndexPath]()
-        for var index = 0; index < entryCount; index++ {
-            let indexPath = NSIndexPath(forRow: index, inSection: section)
-            indexPathsToInsert.append(indexPath)
-        }
-        
+        let indexPath = NSIndexPath(forRow: 0, inSection: section)
+        indexPathsToInsert.append(indexPath)
+       
         historyTable.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: .Top)
     }
     
@@ -138,14 +149,36 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         let sectionInfo = sectionInfoArray[section]
         sectionInfo.isOpen = false
         
-        let entryCount = sectionInfo.timings.count
-        if entryCount > 0 {
-            var indexPathsToDelete = [NSIndexPath]()
-            for var index = 0; index < entryCount; index++ {
-                let indexPath = NSIndexPath(forRow: index, inSection: section)
-                indexPathsToDelete.append(indexPath)
-            }
-            historyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
+        var indexPathsToDelete = [NSIndexPath]()
+        let indexPath = NSIndexPath(forRow: 0, inSection: section)
+        indexPathsToDelete.append(indexPath)
+        
+        historyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
+    }
+
+    // MARK: Actions
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let cell = sender as? TimingViewCell {
+            let index = historyTable.indexPathForCell(cell)
+
+            let sectionInfo = sectionInfoArray[index!.section]
+        
+            let daily = segue.destinationViewController as DailyTableViewController
+            daily.weekInfo = sectionInfo
+
         }
+    }
+    
+    @IBAction func unwindToWeekly(segue: UIStoryboardSegue) {
+    }
+    
+    // MARK: Helpers
+    
+    func getWeekOfYear(date: NSDate) -> Int {
+        let calendar = NSCalendar.currentCalendar()
+        calendar.firstWeekday = 2
+        let components = calendar.components(.WeekOfYearCalendarUnit, fromDate: date)
+        return components.weekOfYear
     }
 }

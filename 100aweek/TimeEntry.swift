@@ -11,7 +11,7 @@ import CoreData
 
 class TimeEntry: NSManagedObject {
 
-    @NSManaged var startDate: String
+    @NSManaged var startDate: NSDate
     @NSManaged var activeTime: String
     @NSManaged var duration: String
     @NSManaged var endTime: String
@@ -19,7 +19,7 @@ class TimeEntry: NSManagedObject {
     @NSManaged var pausedTime: String
     @NSManaged var startTime: String
 
-    class func createInManagedObjectContext(moc: NSManagedObjectContext, _startDate: String, _startTime: String, _endTime: String, _duration: String, _activeTime: String, _pausedTime: String, _pauseCount: NSNumber) -> TimeEntry {
+    class func createInManagedObjectContext(moc: NSManagedObjectContext, _startDate: NSDate, _startTime: String, _endTime: String, _duration: String, _activeTime: String, _pausedTime: String, _pauseCount: NSNumber) -> TimeEntry {
         
         let newEntry = NSEntityDescription.insertNewObjectForEntityForName("TimeEntry", inManagedObjectContext: moc) as TimeEntry
         

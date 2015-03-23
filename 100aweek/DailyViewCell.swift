@@ -1,20 +1,21 @@
 //
-//  TimingViewCell.swift
+//  DailyViewCell.swift
 //  100aweek
 //
-//  Created by Zel Marko on 19/03/15.
+//  Created by Zel Marko on 21/03/15.
 //  Copyright (c) 2015 Zel Marko. All rights reserved.
 //
 
 import UIKit
 
-class TimingViewCell: UITableViewCell {
+class DailyViewCell: UITableViewCell {
 
     @IBOutlet weak var activeLabel: UILabel!
     @IBOutlet weak var pausedLabel: UILabel!
     @IBOutlet weak var pausesLabel: UILabel!
-    @IBOutlet weak var rateLabel: UILabel!
-      
+    @IBOutlet weak var startLabel: UILabel!
+    @IBOutlet weak var endLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
