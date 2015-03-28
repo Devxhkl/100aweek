@@ -9,15 +9,27 @@
 import UIKit
 import CoreData
 
+protocol TimerRefreshDelegate {
+    func refreshLabel(time: String)
+}
+
 class ViewController: UIViewController {
     
-    @IBOutlet weak var goalLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var pausedLabel: UILabel!
+    @IBOutlet weak var pointy: UIImageView!
     @IBOutlet var startButton: UIButton!
     @IBOutlet var pauseButton: UIButton!
     @IBOutlet var stopButton: UIButton!
+    @IBOutlet var historyButton: UIButton!
+    @IBOutlet var settingsButton: UIButton!
+    @IBOutlet weak var todayLabel: UILabel!
+    @IBOutlet weak var todayPertageLabel: UILabel!
+    @IBOutlet weak var weeklyLabel: UILabel!
+    @IBOutlet weak var weeklyPertageLabel: UILabel!
     
+    let customTransitionManager = WeeklyCustomTransition()
+    var delegate: TimerRefreshDelegate?
     var startDate = NSDate()
     var endDate = NSDate()
     var duration = NSTimeInterval()
@@ -30,11 +42,18 @@ class ViewController: UIViewController {
     var paused = false
     var stopped = false
     var state = State.Stopped
+    var progressView = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        //self.transitioningDelegate = customTransitionManager
+        progressView = UIImageView(frame: CGRect(x: 0, y: 271, width: self.view.frame.width, height: 0))
+        progressView.contentMode = .Bottom
+        progressView.image = UIImage(named: "progress")
+        progressView.clipsToBounds = true
+    
+        view.insertSubview(progressView, atIndex: 2)
     }
     
     // MARK: - Actions
@@ -73,7 +92,7 @@ class ViewController: UIViewController {
         state = .Stopped
         if stopped {
             timeLabel.text = "0 : 00 : 00"
-            pausedLabel.text = "0 : 00 : 00                                   "
+            pausedLabel.text = "0 : 00 : 00"
             sender.setTitle("stop", forState: .Normal)
             stopped = false
         }
@@ -103,13 +122,19 @@ class ViewController: UIViewController {
     
     @IBAction func unwindToTimer(segue: UIStoryboardSegue) {
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let weekly = segue.destinationViewController as HistoryViewController
+        weekly.todaily = self
+        weekly.transitioningDelegate = customTransitionManager
+    }
 
     // MARK: - Timers
     
     func startTimer() {
         switch state {
         case .Started:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
             
             startTime = NSDate.timeIntervalSinceReferenceDate()
             startDate = NSDate()
@@ -117,11 +142,11 @@ class ViewController: UIViewController {
             startButton.hidden = true
             pauseButton.hidden = false
         case .Paused:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
             
             pauseTime = NSDate.timeIntervalSinceReferenceDate()
         case .Resumed:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.01, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
         default:
             break
         }
@@ -131,6 +156,8 @@ class ViewController: UIViewController {
         var currentTime = NSDate.timeIntervalSinceReferenceDate()
         var elapsedTime: NSTimeInterval = currentTime - startTime
         duration = elapsedTime
+        
+        
         
         elapsedTime -= pausedTime
         
@@ -142,6 +169,13 @@ class ViewController: UIViewController {
             paused = false
         }
         savedTime = elapsedTime
+        
+        updatePercentageLabel(elapsedTime)
+        updateProgressView(elapsedTime)
+        
+        if let dely = delegate {
+            delegate?.refreshLabel(updateLabel(elapsedTime))
+        }
         
         timeLabel.text = updateLabel(elapsedTime)
     }
@@ -172,6 +206,23 @@ class ViewController: UIViewController {
         
         let time = "\(hours) : \(strMinutes) : \(strSeconds)"
         return time
+    }
+    
+    func updatePercentageLabel(interval: NSTimeInterval) {
+        let daily: CGFloat = (100 * 3600) / 7
+        let intra = CGFloat(interval)
+        let percentage = Int((intra / daily) * 100)
+        if percentage >= 100 {
+            todayPertageLabel.textColor = UIColor.greenColor()
+        }
+        
+        todayPertageLabel.text = "\(percentage) %"
+    }
+    
+    func updateProgressView(time: NSTimeInterval) {
+        let height = CGFloat(time) * 315 / (100 * 3600 / 7)
+        
+        progressView.frame = CGRect(x: 0, y: 271 - height, width: view.frame.width, height: height)
     }
     
     enum State {

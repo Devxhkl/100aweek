@@ -9,22 +9,24 @@
 import UIKit
 import CoreData
 
-class HistoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, HeaderCellDelegate {
+class HistoryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, HeaderCellDelegate, TimerRefreshDelegate {
     
     @IBOutlet weak var historyTable: UITableView!
     @IBOutlet weak var timerLabel: UILabel!
     
     var sectionInfoArray = [SectionInfo]()
+    var todaily: ViewController?
+    let customTransitionManager = WeeklyCustomTransition()
     
     // MARK: - Setup
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.transitioningDelegate = customTransitionManager
+        if let vc = todaily {
+            vc.delegate = self
+        }
         
         if sectionInfoArray.count == 0 || sectionInfoArray.count != self.numberOfSectionsInTableView(historyTable) {
             let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
@@ -156,24 +158,31 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         historyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
     }
 
-    // MARK: Actions
+    // MARK: - Actions
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let cell = sender as? TimingViewCell {
             let index = historyTable.indexPathForCell(cell)
 
             let sectionInfo = sectionInfoArray[index!.section]
-        
+                    
             let daily = segue.destinationViewController as DailyTableViewController
             daily.weekInfo = sectionInfo
-
+            daily.todaily = todaily
+            todaily?.delegate = nil
         }
     }
     
     @IBAction func unwindToWeekly(segue: UIStoryboardSegue) {
     }
     
-    // MARK: Helpers
+    // MARK: - TimerRefreshDelegate
+    
+    func refreshLabel(time: String) {
+        timerLabel.text = time
+    }
+    
+    // MARK: - Helpers
     
     func getWeekOfYear(date: NSDate) -> Int {
         let calendar = NSCalendar.currentCalendar()

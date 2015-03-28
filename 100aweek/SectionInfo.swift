@@ -19,9 +19,11 @@ class SectionInfo: NSObject {
         var end: NSDate?
         var interval = NSTimeInterval()
         let calendar = NSCalendar.currentCalendar()
+        let second: NSTimeInterval = 1
         
+        calendar.firstWeekday = 2
         calendar.rangeOfUnit(.CalendarUnitWeekOfYear, startDate: &start, interval: &interval, forDate: date)
-        end = start?.dateByAddingTimeInterval(interval)
+        end = start?.dateByAddingTimeInterval(interval - second)
         
         let startDateFormat = NSDateFormatter()
         startDateFormat.dateFormat = "d"
@@ -102,8 +104,8 @@ class SectionInfo: NSObject {
     }
     
     func getTimeValues(amount: Int) -> (rest: Int, overflow: Int) {
-        let rest = amount / 60
-        let overflow = rest * 60
+        let overflow = amount / 60
+        let rest = overflow * 60
         
         return (rest, overflow)
     }

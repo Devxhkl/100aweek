@@ -8,14 +8,21 @@
 
 import UIKit
 
-class DailyTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DailyHeadDelegate {
+class DailyTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DailyHeadDelegate, TimerRefreshDelegate {
 
     @IBOutlet weak var dailyTable: UITableView!
+    @IBOutlet weak var timerLabel: UILabel!
     
     var weekInfo = SectionInfo()
     var dayInfoArray = [DayInfo]()
+    var todaily: ViewController?
     
     override func viewWillAppear(animated: Bool) {
+        
+        if let vc = todaily {
+            vc.delegate = self
+        }
+
         if dayInfoArray.count == 0 || dayInfoArray.count != self.numberOfSectionsInTableView(dailyTable) {
             
             var startDates = [String]()
@@ -83,8 +90,10 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.activeLabel.text = entry.activeTime
         cell.pausedLabel.text = entry.pausedTime
         cell.pausesLabel.text = "\(entry.pauseCount)"
-        cell.startLabel.text = entry.startTime
-        cell.endLabel.text = entry.endTime
+        let startEndIndex = "\(entry.startTime.endIndex)"
+        cell.startLabel.text = entry.startTime.substringToIndex(advance(entry.startTime.startIndex, startEndIndex.toInt()! - 3))
+        let endEndIndex = "\(entry.endTime.endIndex)"
+        cell.endLabel.text = entry.endTime.substringToIndex(advance(entry.endTime.startIndex, endEndIndex.toInt()! - 3))
         
         return cell
     }
@@ -96,10 +105,17 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let dayInfo = dayInfoArray[section]
         
-        header.dayLabel.text = getDay(dayInfo.timings[0].startDate)
+        header.dayLabel.text = getDay(dayInfo.timings[0].startDate).lowercaseString
         let active = dayInfo.timings[0].activeTime
         let activeArr = active.componentsSeparatedByString(" : ")
-        header.rateLabel.text = dayInfo.getPercentage(dayInfo.timings[0].activeTime)
+        let dailySuccess = dayInfo.getPercentage(dayInfo.timings[0].activeTime)
+        header.rateLabel.text = dailySuccess.percentage
+        if dailySuccess.over {
+            header.rateLabel.textColor = UIColor.greenColor()
+        }
+        else {
+            header.rateLabel.textColor = UIColor.redColor()
+        }
         header.section = section
         
         let view = UIView(frame: header.frame)
@@ -113,42 +129,47 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func openSection(sectionHeaderCell: DailyHeaderCell, section: Int) {
+        let dayInfo = dayInfoArray[section]
+        dayInfo.isOpen = true
         
-/*
-        let entryCount = sectionInfo.timings.count
+        let entryCount = dayInfo.timings.count
         var indexPathsToInsert = [NSIndexPath]()
         for var index = 0; index < entryCount; index++ {
             let indexPath = NSIndexPath(forRow: index, inSection: section)
             indexPathsToInsert.append(indexPath)
         }
         
-        historyTable.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: .Top)*/
+        dailyTable.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: .Top)
     }
     
     func closeSection(sectionHeaderCell: DailyHeaderCell, section: Int) {
-        /*
-        let sectionInfo = sectionInfoArray[section]
-        sectionInfo.isOpen = false
+        let dayInfo = dayInfoArray[section]
+        dayInfo.isOpen = false
         
-        let entryCount = sectionInfo.timings.count
+        let entryCount = dayInfo.timings.count
         if entryCount > 0 {
             var indexPathsToDelete = [NSIndexPath]()
             for var index = 0; index < entryCount; index++ {
                 let indexPath = NSIndexPath(forRow: index, inSection: section)
                 indexPathsToDelete.append(indexPath)
             }
-            historyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
+            dailyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
         }
-*/
-    }
-
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
-
+    // MARK: - Actions
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let weekly = segue.destinationViewController as HistoryViewController
+        weekly.todaily = todaily
+        todaily?.delegate = nil
+    }
+    
+    // MARK: - TimerRefreshDelegate
+    
+    func refreshLabel(time: String) {
+        timerLabel.text = time
+    }
     
     // MARK: - Helper
 

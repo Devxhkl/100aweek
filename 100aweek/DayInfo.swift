@@ -14,7 +14,7 @@ class DayInfo: NSObject {
     var timings = [TimeEntry]()
     var headerCell = DailyHeaderCell()
     
-    func getPercentage(time: String) -> String {
+    func getPercentage(time: String) -> (percentage: String, over: Bool) {
         var interval: CGFloat = 0.0
         let timeArr = time.componentsSeparatedByString(" : ")
     
@@ -25,8 +25,12 @@ class DayInfo: NSObject {
         interval += CGFloat(timeArr[2].toInt()!)
     
         let percentage = Int((interval / daily) * 100)
+        var over = false
+        if percentage >= 100 {
+            over = true
+        }
     
-        return "\(percentage) %"
+        return ("\(percentage) %", over)
     }
 }
 
