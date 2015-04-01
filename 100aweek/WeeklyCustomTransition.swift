@@ -45,15 +45,15 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
         let pointy = main.pointy!
         let pointyTransformer = presenting ? CGAffineTransformMakeTranslation(0, -pointy.frame.origin.y * 2) : CGAffineTransformIdentity
         
-        let progressView = main.progressView
-        let progressVTransformation = presenting ? CGAffineTransformMakeTranslation(0, -progressView.bounds.origin.y * 2) : CGAffineTransformIdentity
-        
         let historyTimeLabel = history.timerLabel!
         historyTimeLabel.hidden = true
+        
+        let historyBackButton = history.toMainButton!
         
         let startButton = main.startButton!
         let pauseButton = main.pauseButton!
         let stopButton = main.stopButton!
+        let lockButton = main.lockButton!
         let historyButton = main.historyButton!
         let settingsButton = main.settingsButton!
         
@@ -61,7 +61,7 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
         let buttonRightTransformation = presenting ? CGAffineTransformMakeTranslation(stopButton.frame.width, 0) : CGAffineTransformIdentity
         
         let weeklyTable = history.historyTable!
-        let weeklyTTransformation = presenting ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0, weeklyTable.frame.height)
+        let weeklyTTransformation = presenting ? CGAffineTransformIdentity : CGAffineTransformMakeTranslation(0, weeklyTable.bounds.height)
         if presenting {
             weeklyTable.transform = CGAffineTransformMakeTranslation(0, weeklyTable.frame.height)
             weeklyTable.hidden = true
@@ -71,8 +71,6 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
         let yScaleFactor = presenting ? historyTimeLabel.frame.height / mainTimeLabel.frame.height : mainTimeLabel.frame.height / historyTimeLabel.frame.height
         
         let scaleTransformer = CGAffineTransformScale(mainTLTransformer, xScaleFactor, yScaleFactor)
-        
-        
         
         container.addSubview(toView)
         container.addSubview(fromView)
@@ -92,10 +90,13 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
             startButton.transform = buttonLeftTransformation
             pauseButton.transform = buttonLeftTransformation
             stopButton.transform = buttonRightTransformation
+            lockButton.transform = buttonRightTransformation
             historyButton.transform = buttonLeftTransformation
             settingsButton.transform = buttonRightTransformation
             
             if !self.presenting {
+                historyBackButton.hidden = true
+                
                 var index = 0
                 for sectionInfo in history.sectionInfoArray {
                     UIView.animateWithDuration(0.4, delay: 0.05 * Double(index), usingSpringWithDamping: 0.9, initialSpringVelocity: 20, options: nil, animations: {
@@ -112,6 +113,7 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
                 
                 historyTimeLabel.hidden = false
                 weeklyTable.hidden = true
+                
                 
                 UIView.animateWithDuration(0.2, animations: {
                     weeklyTable.transform = weeklyTTransformation

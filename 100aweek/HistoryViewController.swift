@@ -13,24 +13,29 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     @IBOutlet weak var historyTable: UITableView!
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var toMainButton: UIButton!
     
     var sectionInfoArray = [SectionInfo]()
     var todaily: ViewController?
-    let customTransitionManager = WeeklyCustomTransition()
+    let dailyTransitionManager = DailyCustomTransition()
+    let helper = TimeHelperClass()
+    var selectedCell = TimingViewCell()
     
     // MARK: - Setup
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.transitioningDelegate = customTransitionManager
+        historyTable.contentInset = UIEdgeInsetsMake(70, 0, 0, 0)
+        
         if let vc = todaily {
             vc.delegate = self
         }
         
         if sectionInfoArray.count == 0 || sectionInfoArray.count != self.numberOfSectionsInTableView(historyTable) {
             let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-        
+            let helper = TimeHelperClass()
+            
             let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
             let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as? [TimeEntry]
         
@@ -39,7 +44,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
             var startDates = [Int]()
             for entry in fetched {
                 let date = entry.startDate
-                let weekOfYear = getWeekOfYear(date)
+                let weekOfYear = helper.getWeekOfYear(date)
                 startDates.append(weekOfYear)
             }
             for date in startDates {
@@ -62,28 +67,19 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
                 sectionInfo.isOpen = false
                 
                 for entry in fetched {
-                    let weekNum = getWeekOfYear(entry.startDate)
+                    let weekNum = helper.getWeekOfYear(entry.startDate)
                     if weekNum == weekNumber {
                         sectionInfo.timings.append(entry)
                     }
                 }
                 sectionInfoArray.append(sectionInfo)
             }
-            /*
-                        for date in startDates {
-                let sectionInfo = SectionInfo()
-                sectionInfo.isOpen = false
-                
-                for entry in fetched {
-                    if entry.startDate == date {
-                        sectionInfo.timings.append(entry)
-                    }
-                }
-                sectionInfoArray.append(sectionInfo)
-            }
-*/
         }
         
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
     
     // MARK: - TableView Stuff
@@ -100,9 +96,12 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as TimingViewCell
+        let colorView = UIView()
+        colorView.backgroundColor = UIColor.whiteColor()
+        cell.selectedBackgroundView = colorView
         
         let sectionInfo = sectionInfoArray[indexPath.section]
-        let times = sectionInfo.getSummedTimes(sectionInfo.timings)
+        let times = helper.getSummedTimes(sectionInfo.timings)
         
         cell.activeLabel.text = times[0]
         cell.pausedLabel.text = times[1]
@@ -128,6 +127,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         
         let view = UIView(frame: header.frame)
         view.addSubview(header)
+        header.visibleView = view
         
         return view
     }
@@ -162,6 +162,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let cell = sender as? TimingViewCell {
+            selectedCell = cell
             let index = historyTable.indexPathForCell(cell)
 
             let sectionInfo = sectionInfoArray[index!.section]
@@ -170,6 +171,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
             daily.weekInfo = sectionInfo
             daily.todaily = todaily
             todaily?.delegate = nil
+            daily.transitioningDelegate = dailyTransitionManager
         }
     }
     
@@ -180,14 +182,5 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func refreshLabel(time: String) {
         timerLabel.text = time
-    }
-    
-    // MARK: - Helpers
-    
-    func getWeekOfYear(date: NSDate) -> Int {
-        let calendar = NSCalendar.currentCalendar()
-        calendar.firstWeekday = 2
-        let components = calendar.components(.WeekOfYearCalendarUnit, fromDate: date)
-        return components.weekOfYear
     }
 }

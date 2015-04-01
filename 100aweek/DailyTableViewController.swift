@@ -12,12 +12,14 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet weak var dailyTable: UITableView!
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var backButton: UIButton!
     
     var weekInfo = SectionInfo()
     var dayInfoArray = [DayInfo]()
     var todaily: ViewController?
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         if let vc = todaily {
             vc.delegate = self
@@ -113,10 +115,15 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if dailySuccess.over {
             header.rateLabel.textColor = UIColor.greenColor()
         }
+        else if dailySuccess.percentage.toInt() >= 80 && dailySuccess.percentage.toInt() < 100 {
+            header.rateLabel.textColor = UIColor.yellowColor()
+        }
         else {
             header.rateLabel.textColor = UIColor.redColor()
         }
+        
         header.section = section
+        dayInfo.headerCell = header
         
         let view = UIView(frame: header.frame)
         view.addSubview(header)
@@ -179,6 +186,10 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let str = dateFormat.stringFromDate(date)
         
         return str
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
 
 }

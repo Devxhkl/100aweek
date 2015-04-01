@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA0796101ABE1BD40031DB46 /* DailyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA07960F1ABE1BD40031DB46 /* DailyTableViewController.swift */; };
 		FA0796131ABE1F710031DB46 /* DailyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796121ABE1F710031DB46 /* DailyViewCell.swift */; };
 		FA0796151ABE1F8F0031DB46 /* DailyHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */; };
 		FA0796171ABE1FAE0031DB46 /* DayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796161ABE1FAE0031DB46 /* DayInfo.swift */; };
 		FA1283581AC4A0D400405F43 /* WeeklyCustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */; };
 		FA36A7231ABB556C00A7DAEC /* TimeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36A7221ABB556C00A7DAEC /* TimeEntry.swift */; };
-		FA36A7581ABB60C700A7DAEC /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36A7571ABB60C700A7DAEC /* HistoryViewController.swift */; };
 		FA80DED01AB9BE6200361C0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */; };
 		FA80DED31AB9BE6200361C0C /* _00aweek.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA80DED11AB9BE6200361C0C /* _00aweek.xcdatamodeld */; };
 		FA80DED81AB9BE6200361C0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA80DED61AB9BE6200361C0C /* Main.storyboard */; };
@@ -21,7 +19,11 @@
 		FA80DEDD1AB9BE6200361C0C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA80DEDB1AB9BE6200361C0C /* LaunchScreen.xib */; };
 		FA80DEE91AB9BE6200361C0C /* _00aweekTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA80DEE81AB9BE6200361C0C /* _00aweekTests.swift */; };
 		FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */; };
+		FAB4B9EC1ACB0971003DA4EA /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4B9EB1ACB0971003DA4EA /* HistoryViewController.swift */; };
+		FAC30A831ACB37F40027B7E4 /* DailyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */; };
 		FADEEA3E1AC6338E00829A2D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA3D1AC6338E00829A2D /* ViewController.swift */; };
+		FADEEA421AC6A7E800829A2D /* TimeHelperClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */; };
+		FADEEA451AC6D67A00829A2D /* DailyCustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */; };
 		FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */; };
 		FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */; };
 /* End PBXBuildFile section */
@@ -37,13 +39,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		FA07960F1ABE1BD40031DB46 /* DailyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyTableViewController.swift; sourceTree = "<group>"; };
 		FA0796121ABE1F710031DB46 /* DailyViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyViewCell.swift; sourceTree = "<group>"; };
 		FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyHeaderCell.swift; sourceTree = "<group>"; };
 		FA0796161ABE1FAE0031DB46 /* DayInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayInfo.swift; sourceTree = "<group>"; };
 		FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyCustomTransition.swift; sourceTree = "<group>"; };
 		FA36A7221ABB556C00A7DAEC /* TimeEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeEntry.swift; sourceTree = "<group>"; };
-		FA36A7571ABB60C700A7DAEC /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		FA80DECA1AB9BE6200361C0C /* 100aweek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 100aweek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA80DECE1AB9BE6200361C0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -55,7 +55,11 @@
 		FA80DEE71AB9BE6200361C0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA80DEE81AB9BE6200361C0C /* _00aweekTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _00aweekTests.swift; sourceTree = "<group>"; };
 		FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimingViewCell.swift; sourceTree = "<group>"; };
+		FAB4B9EB1ACB0971003DA4EA /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyTableViewController.swift; sourceTree = "<group>"; };
 		FADEEA3D1AC6338E00829A2D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeHelperClass.swift; sourceTree = "<group>"; };
+		FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyCustomTransition.swift; sourceTree = "<group>"; };
 		FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewCell.swift; sourceTree = "<group>"; };
 		FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,7 +85,7 @@
 		FA07960E1ABE1B9A0031DB46 /* WeeklyTable */ = {
 			isa = PBXGroup;
 			children = (
-				FA36A7571ABB60C700A7DAEC /* HistoryViewController.swift */,
+				FAB4B9EB1ACB0971003DA4EA /* HistoryViewController.swift */,
 				FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */,
 				FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */,
 				FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */,
@@ -92,7 +96,7 @@
 		FA0796111ABE1BEC0031DB46 /* DailyTable */ = {
 			isa = PBXGroup;
 			children = (
-				FA07960F1ABE1BD40031DB46 /* DailyTableViewController.swift */,
+				FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */,
 				FA0796121ABE1F710031DB46 /* DailyViewCell.swift */,
 				FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */,
 				FA0796161ABE1FAE0031DB46 /* DayInfo.swift */,
@@ -123,8 +127,9 @@
 			children = (
 				FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */,
 				FADEEA3D1AC6338E00829A2D /* ViewController.swift */,
-				FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */,
+				FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */,
 				FAFFA6F31ABC90B60011FF25 /* History Classes */,
+				FADEEA431AC6D65400829A2D /* Custom Transitions */,
 				FA80DED61AB9BE6200361C0C /* Main.storyboard */,
 				FA80DED91AB9BE6200361C0C /* Images.xcassets */,
 				FA80DEDB1AB9BE6200361C0C /* LaunchScreen.xib */,
@@ -158,6 +163,15 @@
 				FA80DEE71AB9BE6200361C0C /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FADEEA431AC6D65400829A2D /* Custom Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */,
+				FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */,
+			);
+			name = "Custom Transitions";
 			sourceTree = "<group>";
 		};
 		FAFFA6F31ABC90B60011FF25 /* History Classes */ = {
@@ -272,17 +286,19 @@
 			files = (
 				FA1283581AC4A0D400405F43 /* WeeklyCustomTransition.swift in Sources */,
 				FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */,
-				FA0796101ABE1BD40031DB46 /* DailyTableViewController.swift in Sources */,
+				FAB4B9EC1ACB0971003DA4EA /* HistoryViewController.swift in Sources */,
 				FA80DED01AB9BE6200361C0C /* AppDelegate.swift in Sources */,
 				FA0796131ABE1F710031DB46 /* DailyViewCell.swift in Sources */,
 				FA80DED31AB9BE6200361C0C /* _00aweek.xcdatamodeld in Sources */,
 				FA0796171ABE1FAE0031DB46 /* DayInfo.swift in Sources */,
-				FA36A7581ABB60C700A7DAEC /* HistoryViewController.swift in Sources */,
+				FADEEA451AC6D67A00829A2D /* DailyCustomTransition.swift in Sources */,
 				FADEEA3E1AC6338E00829A2D /* ViewController.swift in Sources */,
 				FA0796151ABE1F8F0031DB46 /* DailyHeaderCell.swift in Sources */,
 				FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */,
+				FAC30A831ACB37F40027B7E4 /* DailyTableViewController.swift in Sources */,
 				FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */,
 				FA36A7231ABB556C00A7DAEC /* TimeEntry.swift in Sources */,
+				FADEEA421AC6A7E800829A2D /* TimeHelperClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

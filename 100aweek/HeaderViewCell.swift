@@ -20,6 +20,7 @@ class HeaderViewCell: UITableViewCell, UIGestureRecognizerDelegate {
    
     var isOpen = false
     var delegate: HeaderCellDelegate?
+    var visibleView: UIView!
     var section: Int!
     
     override func awakeFromNib() {

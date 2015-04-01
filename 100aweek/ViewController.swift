@@ -23,6 +23,7 @@ class ViewController: UIViewController {
     @IBOutlet var stopButton: UIButton!
     @IBOutlet var historyButton: UIButton!
     @IBOutlet var settingsButton: UIButton!
+    @IBOutlet weak var lockButton: UIButton!
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var todayPertageLabel: UILabel!
     @IBOutlet weak var weeklyLabel: UILabel!
@@ -30,6 +31,7 @@ class ViewController: UIViewController {
     
     let customTransitionManager = WeeklyCustomTransition()
     var delegate: TimerRefreshDelegate?
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
     var startDate = NSDate()
     var endDate = NSDate()
     var duration = NSTimeInterval()
@@ -42,25 +44,21 @@ class ViewController: UIViewController {
     var paused = false
     var stopped = false
     var state = State.Stopped
-    var progressView = UIImageView()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    var locked = false
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
-        //self.transitioningDelegate = customTransitionManager
-        progressView = UIImageView(frame: CGRect(x: 0, y: 271, width: self.view.frame.width, height: 0))
-        progressView.contentMode = .Bottom
-        progressView.image = UIImage(named: "progress")
-        progressView.clipsToBounds = true
-    
-        view.insertSubview(progressView, atIndex: 2)
+        updateWeeklyPercentageLabel()
     }
-    
+
     // MARK: - Actions
     
     @IBAction func start(sender: AnyObject) {
         state = .Started
         stopped = false
+        locked = true
+        lockMechanism(locked)
         stopButton.setTitle("stop", forState: .Normal)
         
         startTimer()
@@ -91,8 +89,7 @@ class ViewController: UIViewController {
     @IBAction func stop(sender: AnyObject) {
         state = .Stopped
         if stopped {
-            timeLabel.text = "0 : 00 : 00"
-            pausedLabel.text = "0 : 00 : 00"
+            resetLabels()
             sender.setTitle("stop", forState: .Normal)
             stopped = false
         }
@@ -111,6 +108,26 @@ class ViewController: UIViewController {
             savedTime = 0
             pausedTime = 0
             pauseCount = 0
+        }
+    }
+    
+    @IBAction func lockUnlock(sender: AnyObject) {
+        locked = !locked
+        lockMechanism(locked)
+    }
+    
+    func lockMechanism(lock: Bool) {
+        if locked {
+            stopButton.enabled = false
+            lockButton.setTitle("unlock", forState: .Normal)
+            lockButton.backgroundColor = UIColor.blackColor()
+            lockButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        }
+        else {
+            stopButton.enabled = true
+            lockButton.setTitle("lock", forState: .Normal)
+            lockButton.backgroundColor = UIColor.whiteColor()
+            lockButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         }
     }
     
@@ -157,8 +174,6 @@ class ViewController: UIViewController {
         var elapsedTime: NSTimeInterval = currentTime - startTime
         duration = elapsedTime
         
-        
-        
         elapsedTime -= pausedTime
         
         if paused {
@@ -171,7 +186,6 @@ class ViewController: UIViewController {
         savedTime = elapsedTime
         
         updatePercentageLabel(elapsedTime)
-        updateProgressView(elapsedTime)
         
         if let dely = delegate {
             delegate?.refreshLabel(updateLabel(elapsedTime))
@@ -213,16 +227,53 @@ class ViewController: UIViewController {
         let intra = CGFloat(interval)
         let percentage = Int((intra / daily) * 100)
         if percentage >= 100 {
-            todayPertageLabel.textColor = UIColor.greenColor()
+            todayPertageLabel.textColor = UIColor.yellowColor()
+            todayLabel.textColor = UIColor.yellowColor()
         }
         
         todayPertageLabel.text = "\(percentage) %"
     }
     
-    func updateProgressView(time: NSTimeInterval) {
-        let height = CGFloat(time) * 315 / (100 * 3600 / 7)
+    func updateWeeklyPercentageLabel() {
+        let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
+        let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as [TimeEntry]
+        let helper = TimeHelperClass()
         
-        progressView.frame = CGRect(x: 0, y: 271 - height, width: view.frame.width, height: height)
+        let today = NSDate()
+        var thisWeek = 0
+        if let lastDay = fetchResults.last {
+            thisWeek = helper.getWeekOfYear(lastDay.startDate)
+        }
+        var weeksEntries = [TimeEntry]()
+        for entry in fetchResults {
+            if helper.getWeekOfYear(entry.startDate) == thisWeek && helper.getWeekOfYear(today) == thisWeek {
+                weeksEntries.append(entry)
+            }
+        }
+        var newWeek = true
+        var activeHoursArr = [String]()
+        if weeksEntries.count > 0 {
+            let times = helper.getSummedTimes(weeksEntries)
+            activeHoursArr = times[0].componentsSeparatedByString(" : ")
+            newWeek = false
+        }
+        if !newWeek && activeHoursArr[0].toInt() >= 100 {
+            weeklyPertageLabel.textColor = UIColor.yellowColor()
+            weeklyLabel.textColor = UIColor.yellowColor()
+        }
+                
+        weeklyPertageLabel.text = !newWeek ? "\(activeHoursArr[0]) %" : "0 %"
+    }
+    
+    func resetLabels() {
+        let zero = "0 : 00 : 00"
+        timeLabel.text = zero
+        pausedLabel.text = zero
+        
+        let white = UIColor.whiteColor()
+        todayLabel.textColor = white
+        todayPertageLabel.textColor = white
+        todayPertageLabel.text = "0 %"
     }
     
     enum State {
@@ -231,12 +282,16 @@ class ViewController: UIViewController {
         case Resumed
         case Stopped
     }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 
     
     // MARK: CoreData
     
     func saveEntry() {
-        let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+        
         
         // Date Format
         let dateFormat = NSDateFormatter()
@@ -255,11 +310,14 @@ class ViewController: UIViewController {
         let timePaused = pausedLabel.text
         let countOfPause = NSNumber(integer: pauseCount)
         
-        let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
+        if timeActive != "0 : 00 : 00" || timePaused != "0 : 00 : 00" {
+            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
         
-        var error: NSError?
-        if (managedObjectContext?.save(&error) != nil) {
-            println(error?.localizedDescription)
+            var error: NSError?
+            if (managedObjectContext?.save(&error) != nil) {
+                println(error?.localizedDescription)
+
+            }
         }
     }
 }
