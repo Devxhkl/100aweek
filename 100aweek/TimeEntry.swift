@@ -33,5 +33,24 @@ class TimeEntry: NSManagedObject {
         
         return newEntry
     }
+    
+    class func createWithoutManagedObject(_startDate: NSDate, _startTime: String, _endTime: String, _duration: String, _activeTime: String, _pausedTime: String, _pauseCount: NSNumber) -> TimeEntry {
+        
+        
+        let managedObjectContext = AppDelegate().managedObjectContext
+        let entity = NSEntityDescription.entityForName("TimeEntry", inManagedObjectContext: managedObjectContext!)
+        let newEntry = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: nil) as TimeEntry
+        
+        newEntry.startDate = _startDate
+        newEntry.startTime = _startTime
+        newEntry.endTime = _endTime
+        newEntry.duration = _duration
+        newEntry.activeTime = _activeTime
+        newEntry.pausedTime = _pausedTime
+        newEntry.pauseCount = _pauseCount
+        
+        return newEntry
+    }
+
 
 }

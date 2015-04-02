@@ -49,7 +49,7 @@ class ViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        updateWeeklyPercentageLabel()
+       updateWeeklyPercentageLabel(0)
     }
 
     // MARK: - Actions
@@ -151,7 +151,7 @@ class ViewController: UIViewController {
     func startTimer() {
         switch state {
         case .Started:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
             
             startTime = NSDate.timeIntervalSinceReferenceDate()
             startDate = NSDate()
@@ -159,11 +159,11 @@ class ViewController: UIViewController {
             startButton.hidden = true
             pauseButton.hidden = false
         case .Paused:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
             
             pauseTime = NSDate.timeIntervalSinceReferenceDate()
         case .Resumed:
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
         default:
             break
         }
@@ -186,6 +186,7 @@ class ViewController: UIViewController {
         savedTime = elapsedTime
         
         updatePercentageLabel(elapsedTime)
+        updateWeeklyPercentageLabel(elapsedTime)
         
         if let dely = delegate {
             delegate?.refreshLabel(updateLabel(elapsedTime))
@@ -234,13 +235,13 @@ class ViewController: UIViewController {
         todayPertageLabel.text = "\(percentage) %"
     }
     
-    func updateWeeklyPercentageLabel() {
+    func updateWeeklyPercentageLabel(currentInterval: NSTimeInterval) {
         let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
         let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as [TimeEntry]
         let helper = TimeHelperClass()
         
         let today = NSDate()
-        var thisWeek = 0
+        var thisWeek = "0"
         if let lastDay = fetchResults.last {
             thisWeek = helper.getWeekOfYear(lastDay.startDate)
         }
@@ -251,18 +252,26 @@ class ViewController: UIViewController {
             }
         }
         var newWeek = true
-        var activeHoursArr = [String]()
+        var weeklyToday = [String]()
         if weeksEntries.count > 0 {
             let times = helper.getSummedTimes(weeksEntries)
-            activeHoursArr = times[0].componentsSeparatedByString(" : ")
+            let activeHoursArr = times[0].componentsSeparatedByString(" : ")
             newWeek = false
+            
+            let hours = Double(activeHoursArr[0].toInt()! * 3600)
+            let minutes = Double(activeHoursArr[1].toInt()! * 60)
+            let seconds = Double(activeHoursArr[2].toInt()!)
+        
+            weeklyToday = updateLabel(hours + minutes + seconds + currentInterval).componentsSeparatedByString(" : ")
         }
-        if !newWeek && activeHoursArr[0].toInt() >= 100 {
+        
+                
+        if !newWeek && weeklyToday[0].toInt() >= 100 {
             weeklyPertageLabel.textColor = UIColor.yellowColor()
             weeklyLabel.textColor = UIColor.yellowColor()
         }
                 
-        weeklyPertageLabel.text = !newWeek ? "\(activeHoursArr[0]) %" : "0 %"
+        weeklyPertageLabel.text = !newWeek ? "\(weeklyToday[0]) %" : "0 %"
     }
     
     func resetLabels() {

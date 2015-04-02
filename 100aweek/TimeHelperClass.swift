@@ -10,11 +10,11 @@ import UIKit
 
 class TimeHelperClass: NSObject {
    
-    func getWeekOfYear(date: NSDate) -> Int {
+    func getWeekOfYear(date: NSDate) -> String {
         let calendar = NSCalendar.currentCalendar()
         calendar.firstWeekday = 2
         let components = calendar.components(.WeekOfYearCalendarUnit, fromDate: date)
-        return components.weekOfYear
+        return "\(components.weekOfYear)"
     }
     
     func getSummedTimes(timingsArr: [TimeEntry]) -> [String] {
@@ -80,6 +80,45 @@ class TimeHelperClass: NSObject {
         return (rest, overflow)
     }
 
+    func removeDuplicateElements(arr: [String]) -> [String] {
+        var array = arr
 
+        var filter = Dictionary<String,Int>()
+        var len = array.count
+        for var index = 0; index < len  ;++index {
+            var value = "\(array[index])"
+            if filter[value] != nil {
+                array.removeAtIndex(index--)
+                len--
+            }else{
+                filter[value] = 1
+            }
+        }
+        return array
+    }
+    
+    func mergeDaysMechanism(timings: [[TimeEntry]]) -> [TimeEntry] {
+        
+        var merged = [TimeEntry]()
+        
+        
+        for day in timings {
+            let summed = getSummedTimes(day)
+                        
+            let sDate = day[0].startDate
+            let sTime = day[0].startTime
+            let eTime = day[(day.count - 1)].endTime
+            let aTime = summed[0]
+            let pTime = summed[1]
+            let pCount = summed[2].toInt()!
+            
+            let entry = TimeEntry.createWithoutManagedObject(sDate, _startTime: sTime, _endTime: eTime, _duration: "", _activeTime: aTime, _pausedTime: pTime, _pauseCount: pCount)
+            
+            
+            merged.append(entry)
+        }
+        
+        return merged
+    }
 
 }

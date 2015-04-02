@@ -11,7 +11,7 @@ import UIKit
 class DayInfo: NSObject {
     
     var isOpen = false
-    var timings = [TimeEntry]()
+    var timing: TimeEntry!
     var headerCell = DailyHeaderCell()
     
     func getPercentage(time: String) -> (percentage: String, over: Bool) {

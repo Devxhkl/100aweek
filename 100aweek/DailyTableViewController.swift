@@ -61,7 +61,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     let str = getDay(day)
                     
                     if str == date {
-                        dayInfo.timings.append(entry)
+                        dayInfo.timing = entry
                     }
                 }
                 dayInfoArray.append(dayInfo)
@@ -78,16 +78,15 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let dayInfo = dayInfoArray[section]
-        let entryCount = dayInfo.timings.count
         
-        return dayInfo.isOpen ? entryCount : 0
+        return dayInfo.isOpen ? 1 : 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as DailyViewCell
         
         let dayInfo = dayInfoArray[indexPath.section]
-        let entry = dayInfo.timings[indexPath.row]
+        let entry = dayInfo.timing
         
         cell.activeLabel.text = entry.activeTime
         cell.pausedLabel.text = entry.pausedTime
@@ -107,15 +106,16 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let dayInfo = dayInfoArray[section]
         
-        header.dayLabel.text = getDay(dayInfo.timings[0].startDate).lowercaseString
-        let active = dayInfo.timings[0].activeTime
+        header.dayLabel.text = getDay(dayInfo.timing.startDate).lowercaseString
+        let active = dayInfo.timing.activeTime
         let activeArr = active.componentsSeparatedByString(" : ")
-        let dailySuccess = dayInfo.getPercentage(dayInfo.timings[0].activeTime)
+        let dailySuccess = dayInfo.getPercentage(dayInfo.timing.activeTime)
         header.rateLabel.text = dailySuccess.percentage
+        let succArr = dailySuccess.percentage.componentsSeparatedByString(" ")
         if dailySuccess.over {
             header.rateLabel.textColor = UIColor.greenColor()
         }
-        else if dailySuccess.percentage.toInt() >= 80 && dailySuccess.percentage.toInt() < 100 {
+        else if succArr[0].toInt() >= 80 && succArr[0].toInt() < 100 {
             header.rateLabel.textColor = UIColor.yellowColor()
         }
         else {
@@ -139,12 +139,10 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let dayInfo = dayInfoArray[section]
         dayInfo.isOpen = true
         
-        let entryCount = dayInfo.timings.count
         var indexPathsToInsert = [NSIndexPath]()
-        for var index = 0; index < entryCount; index++ {
-            let indexPath = NSIndexPath(forRow: index, inSection: section)
-            indexPathsToInsert.append(indexPath)
-        }
+        
+        let indexPath = NSIndexPath(forRow: 0, inSection: section)
+        indexPathsToInsert.append(indexPath)
         
         dailyTable.insertRowsAtIndexPaths(indexPathsToInsert, withRowAnimation: .Top)
     }
@@ -153,15 +151,12 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let dayInfo = dayInfoArray[section]
         dayInfo.isOpen = false
         
-        let entryCount = dayInfo.timings.count
-        if entryCount > 0 {
-            var indexPathsToDelete = [NSIndexPath]()
-            for var index = 0; index < entryCount; index++ {
-                let indexPath = NSIndexPath(forRow: index, inSection: section)
-                indexPathsToDelete.append(indexPath)
-            }
-            dailyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
-        }
+        var indexPathsToDelete = [NSIndexPath]()
+        
+        let indexPath = NSIndexPath(forRow: 0, inSection: section)
+        indexPathsToDelete.append(indexPath)
+
+        dailyTable.deleteRowsAtIndexPaths(indexPathsToDelete, withRowAnimation: .Top)
     }
     
     // MARK: - Actions

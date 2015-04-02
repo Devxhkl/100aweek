@@ -39,34 +39,63 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
             let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
             let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as? [TimeEntry]
         
-            let fetched = fetchResults!
+            var fetched = fetchResults!
             
-            var startDates = [Int]()
+            var weeks = [String]()
+            var startDates = [String]()
             for entry in fetched {
                 let date = entry.startDate
+                let dateFormat = NSDateFormatter()
+                dateFormat.dateFormat = "d MMM yy"
+                let str = dateFormat.stringFromDate(date)
+                startDates.append(str)
                 let weekOfYear = helper.getWeekOfYear(date)
-                startDates.append(weekOfYear)
+                weeks.append("\(weekOfYear)")
             }
+            weeks = helper.removeDuplicateElements(weeks)
+            
+            var merge = [String]()
+            var last = ""
             for date in startDates {
-                var filter = Dictionary<String, Int>()
-                var len = startDates.count
-                for var index = 0; index < len; ++index {
-                    var value = "\(startDates[index])"
-                    if filter[value] != nil {
-                        startDates.removeAtIndex(index--)
-                        len--
-                    }
-                    else {
-                        filter[value] = 1
+                if date == last {
+                    merge.append(date)
+                }
+                last = date
+            }
+            merge = helper.removeDuplicateElements(merge)
+            
+            var allDuplicates = [[TimeEntry]]()
+            for duplicate in merge {
+                
+                var duplicates = [TimeEntry]()
+                var cou = fetched.count
+                
+                for var index = 0; index < cou; index++  {
+                    let entry = fetched[index]
+                    let date = entry.startDate
+                    let dateFormat = NSDateFormatter()
+                    dateFormat.dateFormat = "d MMM yy"
+                    let str = dateFormat.stringFromDate(date)
+                    
+                    if str == duplicate {
+                        duplicates.append(entry)
+                        fetched.removeAtIndex(index--)
+                        cou--
                     }
                 }
+                if duplicates.count > 0 {
+                    allDuplicates.append(duplicates)
+                }
             }
-
-            for weekNumber in startDates {
+            
+            var mergedEntries = helper.mergeDaysMechanism(allDuplicates) + fetched
+            mergedEntries.sort( { $0.startDate.compare($1.startDate) == NSComparisonResult.OrderedAscending })
+            
+            for weekNumber in weeks {
                 let sectionInfo = SectionInfo()
                 sectionInfo.isOpen = false
                 
-                for entry in fetched {
+                for entry in mergedEntries {
                     let weekNum = helper.getWeekOfYear(entry.startDate)
                     if weekNum == weekNumber {
                         sectionInfo.timings.append(entry)
@@ -74,6 +103,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
                 }
                 sectionInfoArray.append(sectionInfo)
             }
+            
         }
         
     }
