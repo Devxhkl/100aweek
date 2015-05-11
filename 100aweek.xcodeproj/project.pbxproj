@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA0796131ABE1F710031DB46 /* DailyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796121ABE1F710031DB46 /* DailyViewCell.swift */; };
 		FA0796151ABE1F8F0031DB46 /* DailyHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */; };
 		FA0796171ABE1FAE0031DB46 /* DayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0796161ABE1FAE0031DB46 /* DayInfo.swift */; };
 		FA1283581AC4A0D400405F43 /* WeeklyCustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */; };
 		FA36A7231ABB556C00A7DAEC /* TimeEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA36A7221ABB556C00A7DAEC /* TimeEntry.swift */; };
+		FA5113561ACEDF7700512B35 /* BackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5113551ACEDF7700512B35 /* BackupManager.swift */; };
 		FA80DED01AB9BE6200361C0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */; };
 		FA80DED31AB9BE6200361C0C /* _00aweek.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA80DED11AB9BE6200361C0C /* _00aweek.xcdatamodeld */; };
 		FA80DED81AB9BE6200361C0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA80DED61AB9BE6200361C0C /* Main.storyboard */; };
@@ -21,9 +21,12 @@
 		FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */; };
 		FAB4B9EC1ACB0971003DA4EA /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB4B9EB1ACB0971003DA4EA /* HistoryViewController.swift */; };
 		FAC30A831ACB37F40027B7E4 /* DailyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */; };
+		FACA16CC1AD901F200746FB6 /* Intratection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACA16CB1AD901F200746FB6 /* Intratection.swift */; };
 		FADEEA3E1AC6338E00829A2D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA3D1AC6338E00829A2D /* ViewController.swift */; };
 		FADEEA421AC6A7E800829A2D /* TimeHelperClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */; };
 		FADEEA451AC6D67A00829A2D /* DailyCustomTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */; };
+		FAE4AC1E1AD807D90056126E /* DailyViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4AC1D1AD807D90056126E /* DailyViewCell.swift */; };
+		FAF962931AF8183B00DEFA2A /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF962921AF8183B00DEFA2A /* SwiftyJSON.swift */; };
 		FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */; };
 		FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */; };
 /* End PBXBuildFile section */
@@ -39,11 +42,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		FA0796121ABE1F710031DB46 /* DailyViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyViewCell.swift; sourceTree = "<group>"; };
 		FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyHeaderCell.swift; sourceTree = "<group>"; };
 		FA0796161ABE1FAE0031DB46 /* DayInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayInfo.swift; sourceTree = "<group>"; };
 		FA1283571AC4A0D400405F43 /* WeeklyCustomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeeklyCustomTransition.swift; sourceTree = "<group>"; };
 		FA36A7221ABB556C00A7DAEC /* TimeEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeEntry.swift; sourceTree = "<group>"; };
+		FA43981C1ADDAAA300FBE8B9 /* _00aweekV2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = _00aweekV2.xcdatamodel; sourceTree = "<group>"; };
+		FA5113551ACEDF7700512B35 /* BackupManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackupManager.swift; sourceTree = "<group>"; };
 		FA80DECA1AB9BE6200361C0C /* 100aweek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 100aweek.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA80DECE1AB9BE6200361C0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -57,9 +61,12 @@
 		FAA2AE561ABB7F8800037ADC /* TimingViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimingViewCell.swift; sourceTree = "<group>"; };
 		FAB4B9EB1ACB0971003DA4EA /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyTableViewController.swift; sourceTree = "<group>"; };
+		FACA16CB1AD901F200746FB6 /* Intratection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intratection.swift; sourceTree = "<group>"; };
 		FADEEA3D1AC6338E00829A2D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeHelperClass.swift; sourceTree = "<group>"; };
 		FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyCustomTransition.swift; sourceTree = "<group>"; };
+		FAE4AC1D1AD807D90056126E /* DailyViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyViewCell.swift; sourceTree = "<group>"; };
+		FAF962921AF8183B00DEFA2A /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		FAFFA6F11ABC8E170011FF25 /* HeaderViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderViewCell.swift; sourceTree = "<group>"; };
 		FAFFA6F41ABC93AC0011FF25 /* SectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,7 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				FAC30A821ACB37F40027B7E4 /* DailyTableViewController.swift */,
-				FA0796121ABE1F710031DB46 /* DailyViewCell.swift */,
+				FAE4AC1D1AD807D90056126E /* DailyViewCell.swift */,
 				FA0796141ABE1F8F0031DB46 /* DailyHeaderCell.swift */,
 				FA0796161ABE1FAE0031DB46 /* DayInfo.swift */,
 			);
@@ -127,15 +134,15 @@
 			children = (
 				FA80DECF1AB9BE6200361C0C /* AppDelegate.swift */,
 				FADEEA3D1AC6338E00829A2D /* ViewController.swift */,
-				FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */,
+				FA80DED61AB9BE6200361C0C /* Main.storyboard */,
 				FAFFA6F31ABC90B60011FF25 /* History Classes */,
 				FADEEA431AC6D65400829A2D /* Custom Transitions */,
-				FA80DED61AB9BE6200361C0C /* Main.storyboard */,
+				FAF675491AE6521700A28261 /* Backup */,
+				FA80DECD1AB9BE6200361C0C /* Supporting Files */,
 				FA80DED91AB9BE6200361C0C /* Images.xcassets */,
 				FA80DEDB1AB9BE6200361C0C /* LaunchScreen.xib */,
 				FA80DED11AB9BE6200361C0C /* _00aweek.xcdatamodeld */,
 				FA36A7221ABB556C00A7DAEC /* TimeEntry.swift */,
-				FA80DECD1AB9BE6200361C0C /* Supporting Files */,
 			);
 			path = 100aweek;
 			sourceTree = "<group>";
@@ -143,6 +150,9 @@
 		FA80DECD1AB9BE6200361C0C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FADEEA411AC6A7E800829A2D /* TimeHelperClass.swift */,
+				FACA16CB1AD901F200746FB6 /* Intratection.swift */,
+				FAF962921AF8183B00DEFA2A /* SwiftyJSON.swift */,
 				FA80DECE1AB9BE6200361C0C /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -172,6 +182,14 @@
 				FADEEA441AC6D67A00829A2D /* DailyCustomTransition.swift */,
 			);
 			name = "Custom Transitions";
+			sourceTree = "<group>";
+		};
+		FAF675491AE6521700A28261 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				FA5113551ACEDF7700512B35 /* BackupManager.swift */,
+			);
+			name = Backup;
 			sourceTree = "<group>";
 		};
 		FAFFA6F31ABC90B60011FF25 /* History Classes */ = {
@@ -285,20 +303,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA1283581AC4A0D400405F43 /* WeeklyCustomTransition.swift in Sources */,
+				FACA16CC1AD901F200746FB6 /* Intratection.swift in Sources */,
 				FAFFA6F21ABC8E170011FF25 /* HeaderViewCell.swift in Sources */,
 				FAB4B9EC1ACB0971003DA4EA /* HistoryViewController.swift in Sources */,
 				FA80DED01AB9BE6200361C0C /* AppDelegate.swift in Sources */,
-				FA0796131ABE1F710031DB46 /* DailyViewCell.swift in Sources */,
 				FA80DED31AB9BE6200361C0C /* _00aweek.xcdatamodeld in Sources */,
 				FA0796171ABE1FAE0031DB46 /* DayInfo.swift in Sources */,
 				FADEEA451AC6D67A00829A2D /* DailyCustomTransition.swift in Sources */,
 				FADEEA3E1AC6338E00829A2D /* ViewController.swift in Sources */,
 				FA0796151ABE1F8F0031DB46 /* DailyHeaderCell.swift in Sources */,
+				FAE4AC1E1AD807D90056126E /* DailyViewCell.swift in Sources */,
 				FAFFA6F51ABC93AC0011FF25 /* SectionInfo.swift in Sources */,
 				FAC30A831ACB37F40027B7E4 /* DailyTableViewController.swift in Sources */,
 				FAA2AE571ABB7F8800037ADC /* TimingViewCell.swift in Sources */,
 				FA36A7231ABB556C00A7DAEC /* TimeEntry.swift in Sources */,
+				FAF962931AF8183B00DEFA2A /* SwiftyJSON.swift in Sources */,
 				FADEEA421AC6A7E800829A2D /* TimeHelperClass.swift in Sources */,
+				FA5113561ACEDF7700512B35 /* BackupManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +444,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = 100aweek/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -434,6 +456,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = 100aweek/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -509,9 +532,10 @@
 		FA80DED11AB9BE6200361C0C /* _00aweek.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				FA43981C1ADDAAA300FBE8B9 /* _00aweekV2.xcdatamodel */,
 				FA80DED21AB9BE6200361C0C /* _00aweek.xcdatamodel */,
 			);
-			currentVersion = FA80DED21AB9BE6200361C0C /* _00aweek.xcdatamodel */;
+			currentVersion = FA43981C1ADDAAA300FBE8B9 /* _00aweekV2.xcdatamodel */;
 			path = _00aweek.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

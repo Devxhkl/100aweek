@@ -31,9 +31,13 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         if let vc = todaily {
             vc.delegate = self
         }
-        
+        if sectionInfoArray.count != 0 {
+            println(sectionInfoArray[0].headerCell.isOpen)
+
+        }
+                
         if sectionInfoArray.count == 0 || sectionInfoArray.count != self.numberOfSectionsInTableView(historyTable) {
-            let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
+            let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
             let helper = TimeHelperClass()
             
             let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
@@ -125,7 +129,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as TimingViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)as! TimingViewCell
         let colorView = UIView()
         colorView.backgroundColor = UIColor.whiteColor()
         cell.selectedBackgroundView = colorView
@@ -144,7 +148,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableCellWithIdentifier("Header") as HeaderViewCell
+        let header = tableView.dequeueReusableCellWithIdentifier("Header") as! HeaderViewCell
         header.frame = CGRect(x: header.frame.origin.x, y: header.frame.origin.y, width: historyTable.frame.width, height: header.frame.height)
         header.delegate = self
         
@@ -197,7 +201,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
 
             let sectionInfo = sectionInfoArray[index!.section]
                     
-            let daily = segue.destinationViewController as DailyTableViewController
+            let daily = segue.destinationViewController as! DailyTableViewController
             daily.weekInfo = sectionInfo
             daily.todaily = todaily
             todaily?.delegate = nil

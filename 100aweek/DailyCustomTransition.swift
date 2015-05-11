@@ -19,8 +19,8 @@ class DailyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, UI
         let toView = transitionContext.viewForKey(UITransitionContextToViewKey)!
         let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)!
         
-        let weekly = presenting ? transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as HistoryViewController : transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as HistoryViewController
-        let daily = presenting ? transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as DailyTableViewController : transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as DailyTableViewController
+        let weekly = presenting ? transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! HistoryViewController : transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! HistoryViewController
+        let daily = presenting ? transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! DailyTableViewController : transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! DailyTableViewController
         
         let weeklyTable = weekly.historyTable!
         let weeklyTimeLabel = weekly.timerLabel!
@@ -102,7 +102,7 @@ class DailyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, UI
         
             var cindex = 0
             for c in weeklyTable.visibleCells() {
-                let cell = c as TimingViewCell
+                let cell = c as! TimingViewCell
                 //println(cell.frame)
                 
                 

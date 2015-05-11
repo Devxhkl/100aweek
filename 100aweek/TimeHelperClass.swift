@@ -13,7 +13,7 @@ class TimeHelperClass: NSObject {
     func getWeekOfYear(date: NSDate) -> String {
         let calendar = NSCalendar.currentCalendar()
         calendar.firstWeekday = 2
-        let components = calendar.components(.WeekOfYearCalendarUnit, fromDate: date)
+        let components = calendar.components(.CalendarUnitWeekOfMonth, fromDate: date)
         return "\(components.weekOfYear)"
     }
     
@@ -112,7 +112,7 @@ class TimeHelperClass: NSObject {
             let pTime = summed[1]
             let pCount = summed[2].toInt()!
             
-            let entry = TimeEntry.createWithoutManagedObject(sDate, _startTime: sTime, _endTime: eTime, _duration: "", _activeTime: aTime, _pausedTime: pTime, _pauseCount: pCount)
+            let entry = TimeEntry.createWithoutManagedObject(sDate, _startTime: sTime, _endTime: eTime, _activeTime: aTime, _pausedTime: pTime, _pauseCount: pCount, _summary: "")
             
             
             merged.append(entry)

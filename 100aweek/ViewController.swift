@@ -9,47 +9,98 @@
 import UIKit
 import CoreData
 
+// MARK: - TimerRefreshDelegate
+
 protocol TimerRefreshDelegate {
     func refreshLabel(time: String)
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextViewDelegate {
+    
+    // MARK: - Label outlets
     
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var pausedLabel: UILabel!
     @IBOutlet weak var pointy: UIImageView!
-    @IBOutlet var startButton: UIButton!
-    @IBOutlet var pauseButton: UIButton!
-    @IBOutlet var stopButton: UIButton!
-    @IBOutlet var historyButton: UIButton!
-    @IBOutlet var settingsButton: UIButton!
-    @IBOutlet weak var lockButton: UIButton!
     @IBOutlet weak var todayLabel: UILabel!
     @IBOutlet weak var todayPertageLabel: UILabel!
     @IBOutlet weak var weeklyLabel: UILabel!
     @IBOutlet weak var weeklyPertageLabel: UILabel!
+    @IBOutlet weak var summaryTextView: UITextView!
+    @IBOutlet weak var summaryView: UIView!
+    @IBOutlet weak var summaryTextViewPlaceholder: UILabel!
+
+    // MARK: - Button outlets
     
-    let customTransitionManager = WeeklyCustomTransition()
-    var delegate: TimerRefreshDelegate?
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext
-    var startDate = NSDate()
-    var endDate = NSDate()
-    var duration = NSTimeInterval()
+    @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var pauseButton: UIButton!
+    @IBOutlet weak var stopButton: UIButton!
+    @IBOutlet weak var historyButton: UIButton!
+    @IBOutlet weak var settingsButton: UIButton!
+    @IBOutlet weak var lockButton: UIButton!
+    
+    // MARK: - Main Timer properties
+    
+    var timer = NSTimer()
+    var startDate: NSDate!
     var startTime = NSTimeInterval()
     var pauseTime = NSTimeInterval()
-    var savedTime = NSTimeInterval()
     var pausedTime = NSTimeInterval()
-    var timer = NSTimer()
     var pauseCount = 0
+   
+    // MARK: - Timer helpers
+    
+    var savedTime = NSTimeInterval()
+    var endDate = NSDate()
+    var duration = NSTimeInterval()
     var paused = false
     var stopped = false
     var state = State.Stopped
     var locked = false
+    var killed = true
+    let intra = Reachability.isConnectedToNetwork()
+    
+    // MARK: - Delegates, Managers, Contexts,...
+    
+    let customTransitionManager = WeeklyCustomTransition()
+    var delegate: TimerRefreshDelegate?
+    var backupManager = BackupManager()
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
+    // MARK: - ViewController functions
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-       updateWeeklyPercentageLabel(0)
+        summaryView.hidden = true
+        
+        if killed && intra {
+            self.backupManager = self.backupManager.getBackupFromBase()
+            
+            if self.backupManager.date != nil {
+                let idFormat = NSDateFormatter()
+                idFormat.dateFormat = "yyyyMMdd"
+            
+                let today = NSDate()
+                
+                let todayID = idFormat.stringFromDate(today)
+                let backupID = idFormat.stringFromDate(self.backupManager.date)
+            
+                if todayID == backupID {
+                    self.startDate = self.backupManager.date
+                    self.startTime = self.backupManager.time
+                    self.pausedTime = self.backupManager.pauseTime
+                    self.pauseCount = self.backupManager.pausedCount
+                    
+                    self.updateTime()
+                    self.pausedLabel.text = updateLabel(self.pausedTime)
+                }
+            }
+            killed = false
+        }
+        updateWeeklyPercentageLabel(0)
+        summaryTextView.delegate = self
+        summaryTextView.returnKeyType = .Done
     }
 
     // MARK: - Actions
@@ -94,9 +145,10 @@ class ViewController: UIViewController {
             stopped = false
         }
         else {
+            summaryView.hidden = false
             timer.invalidate()
             endDate = NSDate()
-            saveEntry()
+            
             
             self.pauseButton.hidden = true
             self.startButton.hidden = false
@@ -111,6 +163,12 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func dailySummaryDone(sender: AnyObject) {
+        saveEntry()
+        summaryView.hidden = true
+        summaryTextViewPlaceholder.hidden = false
+    }
+    
     @IBAction func lockUnlock(sender: AnyObject) {
         locked = !locked
         lockMechanism(locked)
@@ -119,13 +177,13 @@ class ViewController: UIViewController {
     func lockMechanism(lock: Bool) {
         if locked {
             stopButton.enabled = false
-            lockButton.setTitle("unlock", forState: .Normal)
+            lockButton.setTitle("u/lock", forState: .Normal)
             lockButton.backgroundColor = UIColor.blackColor()
             lockButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         }
         else {
             stopButton.enabled = true
-            lockButton.setTitle("lock", forState: .Normal)
+            lockButton.setTitle("|lock", forState: .Normal)
             lockButton.backgroundColor = UIColor.whiteColor()
             lockButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         }
@@ -139,12 +197,6 @@ class ViewController: UIViewController {
     
     @IBAction func unwindToTimer(segue: UIStoryboardSegue) {
     }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let weekly = segue.destinationViewController as HistoryViewController
-        weekly.todaily = self
-        weekly.transitioningDelegate = customTransitionManager
-    }
 
     // MARK: - Timers
     
@@ -153,8 +205,14 @@ class ViewController: UIViewController {
         case .Started:
             timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
             
-            startTime = NSDate.timeIntervalSinceReferenceDate()
-            startDate = NSDate()
+            // If startTime is nil, we set the startTime to now, otherwise startTime is set from backup.
+            if startTime == 0 {
+                startTime = NSDate.timeIntervalSinceReferenceDate()
+                startDate = NSDate()
+                if intra {
+                    backupManager.createInitialBackup(startDate)
+                }
+            }
             
             startButton.hidden = true
             pauseButton.hidden = false
@@ -162,6 +220,7 @@ class ViewController: UIViewController {
             timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updatePausedTime"), userInfo: nil, repeats: true)
             
             pauseTime = NSDate.timeIntervalSinceReferenceDate()
+            
         case .Resumed:
             timer = NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: Selector("updateTime"), userInfo: nil, repeats: true)
         default:
@@ -170,6 +229,7 @@ class ViewController: UIViewController {
     }
     
     func updateTime() {
+        // Get current time and subtract it from startTime to get the time difference.
         var currentTime = NSDate.timeIntervalSinceReferenceDate()
         var elapsedTime: NSTimeInterval = currentTime - startTime
         duration = elapsedTime
@@ -179,7 +239,11 @@ class ViewController: UIViewController {
         if paused {
             let dif = elapsedTime - savedTime
             pausedTime += dif
-            elapsedTime -= pausedTime
+            elapsedTime = savedTime
+            
+            if intra {
+                backupManager.updateBackupFromPause(startDate, pausedTime: pausedTime, pauseCount: pauseCount)
+            }
             
             paused = false
         }
@@ -237,7 +301,7 @@ class ViewController: UIViewController {
     
     func updateWeeklyPercentageLabel(currentInterval: NSTimeInterval) {
         let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
-        let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as [TimeEntry]
+        let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as! [TimeEntry]
         let helper = TimeHelperClass()
         
         let today = NSDate()
@@ -292,35 +356,67 @@ class ViewController: UIViewController {
         case Stopped
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    // MARK: - Settings
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let weekly = segue.destinationViewController as! HistoryViewController
+        weekly.todaily = self
+        weekly.transitioningDelegate = customTransitionManager
+    }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        view.endEditing(true)
+        if summaryTextView.text == "" {
+            summaryTextViewPlaceholder.hidden = false
+        }
+    }
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            textView.resignFirstResponder()
+            if textView.text == "" {
+                summaryTextViewPlaceholder.hidden = false
+            }
+        }
+        
         return true
     }
-
     
-    // MARK: CoreData
+    func textViewDidBeginEditing(textView: UITextView) {
+        summaryTextViewPlaceholder.hidden = true
+    }
+    // MARK: - CoreData
     
     func saveEntry() {
         
-        
-        // Date Format
-        let dateFormat = NSDateFormatter()
-        dateFormat.dateFormat = "EEE d MMM"
-        
-        // Time Format
-        let timeFormat = NSDateFormatter()
-        timeFormat.dateFormat = "H:mm:ss"
-        
-        let startDateF = dateFormat.stringFromDate(startDate)
-        let startTimeF = timeFormat.stringFromDate(startDate)
-        let endTimeF = timeFormat.stringFromDate(endDate)
-        
-        let durationTime = updateLabel(duration)
         let timeActive = timeLabel.text
         let timePaused = pausedLabel.text
-        let countOfPause = NSNumber(integer: pauseCount)
         
-        if timeActive != "0 : 00 : 00" || timePaused != "0 : 00 : 00" {
-            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _duration: durationTime, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause)
+        if /*timeActive != "0 : 00 : 00" || timePaused != "0 : 00 : 00"*/ startDate != nil {
+            //summaryView.hidden = false
+            // Date Format
+            let dateFormat = NSDateFormatter()
+            dateFormat.dateFormat = "EEE d MMM"
+        
+            // Time Format
+            let timeFormat = NSDateFormatter()
+            timeFormat.dateFormat = "H:mm:ss"
+        
+            let startDateF = dateFormat.stringFromDate(startDate)
+            let startTimeF = timeFormat.stringFromDate(startDate)
+            let endTimeF = timeFormat.stringFromDate(endDate)
+        
+            let durationTime = updateLabel(duration)
+        
+            let countOfPause = NSNumber(integer: pauseCount)
+            let summary = "Something long for the autoresing label"
+        
+        
+            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause, _summary: summary)
         
             var error: NSError?
             if (managedObjectContext?.save(&error) != nil) {
@@ -328,6 +424,19 @@ class ViewController: UIViewController {
 
             }
         }
+        else {
+            let alert = UIAlertView(title: "No entry to save", message: "You have to start a session to save it", delegate: self, cancelButtonTitle: "Alright")
+            alert.show()
+        }
+        if intra {
+            //backupManager.deleteBackup()
+        }
+        
+        backupManager = BackupManager()
+        startDate = nil
+        startTime = 0
+        pauseTime = 0
+        
     }
 }
 

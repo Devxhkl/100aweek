@@ -7,8 +7,9 @@
         <attribute name="pausedTime" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="TimeEntry" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="TimeEntry" positionX="-63" positionY="-18" width="128" height="150"/>
     </elements>
 </model>

@@ -22,8 +22,8 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
         toView.backgroundColor = UIColor.blackColor()
         fromView.backgroundColor = UIColor.clearColor()
         
-        let main = presenting ? transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as ViewController : transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as ViewController
-        let history = presenting ? transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as HistoryViewController : transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as HistoryViewController
+        let main = presenting ? transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! ViewController : transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! ViewController
+        let history = presenting ? transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! HistoryViewController : transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! HistoryViewController
         
         let mainTimeLabel = main.timeLabel!
         let mainTLTransformer = presenting ? CGAffineTransformMakeTranslation(0, -(mainTimeLabel.frame.origin.y - 9)) : CGAffineTransformIdentity
@@ -93,6 +93,8 @@ class WeeklyCustomTransition: NSObject, UIViewControllerAnimatedTransitioning, U
             lockButton.transform = buttonRightTransformation
             historyButton.transform = buttonLeftTransformation
             settingsButton.transform = buttonRightTransformation
+            
+         
             
             if !self.presenting {
                 historyBackButton.hidden = true

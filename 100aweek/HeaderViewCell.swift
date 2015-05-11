@@ -18,10 +18,10 @@ class HeaderViewCell: UITableViewCell, UIGestureRecognizerDelegate {
     @IBOutlet weak var weekLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
    
-    var isOpen = false
     var delegate: HeaderCellDelegate?
     var visibleView: UIView!
     var section: Int!
+    var isOpen = false
     
     override func awakeFromNib() {
         super.awakeFromNib()

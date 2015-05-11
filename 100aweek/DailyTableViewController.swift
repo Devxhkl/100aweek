@@ -21,6 +21,9 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        dailyTable.estimatedRowHeight = 118.0
+        dailyTable.rowHeight = UITableViewAutomaticDimension
+        
         if let vc = todaily {
             vc.delegate = self
         }
@@ -83,7 +86,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as DailyViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! DailyViewCell
         
         let dayInfo = dayInfoArray[indexPath.section]
         let entry = dayInfo.timing
@@ -95,18 +98,21 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.startLabel.text = entry.startTime.substringToIndex(advance(entry.startTime.startIndex, startEndIndex.toInt()! - 3))
         let endEndIndex = "\(entry.endTime.endIndex)"
         cell.endLabel.text = entry.endTime.substringToIndex(advance(entry.endTime.startIndex, endEndIndex.toInt()! - 3))
+        cell.summaryLabel.text = "Boom, let's expand this label beyond the limit of expansion, and further! Cause, why not? We're just trying it out, right?"
         
         return cell
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableCellWithIdentifier("Header") as DailyHeaderCell
-        header.frame = CGRect(x: header.frame.origin.x, y: header.frame.origin.y, width: dailyTable.frame.width, height: header.frame.height)
+        let header = tableView.dequeueReusableCellWithIdentifier("Header") as! DailyHeaderCell
+        header.frame = CGRect(x: header.frame.origin.x, y: header.frame.origin.y, width: dailyTable.frame.width, height: 85)
         header.delegate = self
         
         let dayInfo = dayInfoArray[section]
         
-        header.dayLabel.text = getDay(dayInfo.timing.startDate).lowercaseString
+        let dayArr = getDay(dayInfo.timing.startDate).componentsSeparatedByString(" ")
+        header.dayLabel.text = dayArr[0].lowercaseString
+        header.dateLabel.text = dayArr[1] + " " + dayArr[2].lowercaseString
         let active = dayInfo.timing.activeTime
         let activeArr = active.componentsSeparatedByString(" : ")
         let dailySuccess = dayInfo.getPercentage(dayInfo.timing.activeTime)
@@ -132,7 +138,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
+        return 85
     }
     
     func openSection(sectionHeaderCell: DailyHeaderCell, section: Int) {
@@ -162,7 +168,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - Actions
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let weekly = segue.destinationViewController as HistoryViewController
+        let weekly = segue.destinationViewController as! HistoryViewController
         weekly.todaily = todaily
         todaily?.delegate = nil
     }

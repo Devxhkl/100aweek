@@ -11,12 +11,12 @@ import UIKit
 protocol DailyHeadDelegate {
     func openSection(sectionHeaderCell: DailyHeaderCell, section: Int)
     func closeSection(sectionHeaderCell: DailyHeaderCell, section: Int)
-
 }
 
 class DailyHeaderCell: UITableViewCell, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var rateLabel: UILabel!
     
     var isOpen = false
