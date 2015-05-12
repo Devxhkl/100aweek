@@ -159,7 +159,7 @@
                                         </constraints>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="25"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="light" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" keyboardAppearance="light" enablesReturnKeyAutomatically="YES"/>
                                     </textView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BLK-br-9nT">
                                         <rect key="frame" x="126" y="220" width="68" height="48"/>
@@ -249,6 +249,7 @@
                         <outlet property="summaryTextView" destination="8Au-iu-4sR" id="ecj-nz-foG"/>
                         <outlet property="summaryTextViewPlaceholder" destination="rNn-rT-lxd" id="SpO-r8-ybZ"/>
                         <outlet property="summaryView" destination="DR9-wo-ZEF" id="9j6-fz-SGZ"/>
+                        <outlet property="summaryViewButtomConstraint" destination="g55-Tp-jPi" id="boo-5D-FAN"/>
                         <outlet property="timeLabel" destination="d4z-aS-Kia" id="kZ5-3T-vQ7"/>
                         <outlet property="todayLabel" destination="aaJ-HZ-TtQ" id="YgD-7X-pGN"/>
                         <outlet property="todayPertageLabel" destination="YtJ-0h-qcn" id="1w7-Za-w7p"/>
@@ -258,7 +259,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="724" y="368"/>
+            <point key="canvasLocation" x="1004" y="476"/>
         </scene>
         <!--History View Controller-->
         <scene sceneID="ZKV-x4-r0d">
@@ -429,7 +430,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VIp-Po-f15" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="brq-xp-zou" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1119" y="368"/>
+            <point key="canvasLocation" x="1401" y="476"/>
         </scene>
         <!--Daily Table View Controller-->
         <scene sceneID="C1g-gL-9WR">
@@ -639,7 +640,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eb4-ch-D8Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="kdl-fv-ivw" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1510" y="368"/>
+            <point key="canvasLocation" x="1790" y="476"/>
         </scene>
     </scenes>
     <resources>

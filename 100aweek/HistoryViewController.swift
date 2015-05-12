@@ -54,9 +54,11 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
                 let str = dateFormat.stringFromDate(date)
                 startDates.append(str)
                 let weekOfYear = helper.getWeekOfYear(date)
-                weeks.append("\(weekOfYear)")
+                
+                weeks.append(weekOfYear)
             }
             weeks = helper.removeDuplicateElements(weeks)
+            weeks.sort( { $0.toInt() > $1.toInt() })
             
             var merge = [String]()
             var last = ""

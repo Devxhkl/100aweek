@@ -13,7 +13,8 @@ class TimeHelperClass: NSObject {
     func getWeekOfYear(date: NSDate) -> String {
         let calendar = NSCalendar.currentCalendar()
         calendar.firstWeekday = 2
-        let components = calendar.components(.CalendarUnitWeekOfMonth, fromDate: date)
+        let components = calendar.components(.CalendarUnitWeekOfYear, fromDate: date)
+        
         return "\(components.weekOfYear)"
     }
     

@@ -98,7 +98,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.startLabel.text = entry.startTime.substringToIndex(advance(entry.startTime.startIndex, startEndIndex.toInt()! - 3))
         let endEndIndex = "\(entry.endTime.endIndex)"
         cell.endLabel.text = entry.endTime.substringToIndex(advance(entry.endTime.startIndex, endEndIndex.toInt()! - 3))
-        cell.summaryLabel.text = "Boom, let's expand this label beyond the limit of expansion, and further! Cause, why not? We're just trying it out, right?"
+        cell.summaryLabel.text = entry.summary
         
         return cell
     }

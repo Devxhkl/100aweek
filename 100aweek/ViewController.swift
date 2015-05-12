@@ -17,6 +17,10 @@ protocol TimerRefreshDelegate {
 
 class ViewController: UIViewController, UITextViewDelegate {
     
+    // MARK: - Layout Constrains
+    
+    @IBOutlet weak var summaryViewButtomConstraint: NSLayoutConstraint!
+    
     // MARK: - Label outlets
     
     @IBOutlet weak var timeLabel: UILabel!
@@ -102,6 +106,13 @@ class ViewController: UIViewController, UITextViewDelegate {
         summaryTextView.delegate = self
         summaryTextView.returnKeyType = .Done
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        summaryViewButtomConstraint.constant = 0.0
+    }
 
     // MARK: - Actions
     
@@ -165,6 +176,8 @@ class ViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func dailySummaryDone(sender: AnyObject) {
         saveEntry()
+        
+        self.view.endEditing(true)
         summaryView.hidden = true
         summaryTextViewPlaceholder.hidden = false
     }
@@ -370,6 +383,12 @@ class ViewController: UIViewController, UITextViewDelegate {
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         view.endEditing(true)
+        summaryViewButtomConstraint.constant = 0.0
+        
+        UIView.animateWithDuration(0.25, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
         if summaryTextView.text == "" {
             summaryTextViewPlaceholder.hidden = false
         }
@@ -378,6 +397,12 @@ class ViewController: UIViewController, UITextViewDelegate {
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
+            summaryViewButtomConstraint.constant = 0.0
+            
+            UIView.animateWithDuration(0.25, animations: {
+                self.view.layoutIfNeeded()
+            })
+            
             if textView.text == "" {
                 summaryTextViewPlaceholder.hidden = false
             }
@@ -389,6 +414,18 @@ class ViewController: UIViewController, UITextViewDelegate {
     func textViewDidBeginEditing(textView: UITextView) {
         summaryTextViewPlaceholder.hidden = true
     }
+    
+    func keyboardWillShow(sender: NSNotification) {
+        if let userInfo = sender.userInfo {
+            if let keyboardHeight = userInfo[UIKeyboardFrameEndUserInfoKey]?.CGRectValue().size.height {
+                summaryViewButtomConstraint.constant = keyboardHeight
+                UIView.animateWithDuration(0.25, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+    }
+    
     // MARK: - CoreData
     
     func saveEntry() {
@@ -413,20 +450,21 @@ class ViewController: UIViewController, UITextViewDelegate {
             let durationTime = updateLabel(duration)
         
             let countOfPause = NSNumber(integer: pauseCount)
-            let summary = "Something long for the autoresing label"
+            let summary = summaryTextView.text
+            println(summary)
         
         
-            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause, _summary: summary)
-        
-            var error: NSError?
-            if (managedObjectContext?.save(&error) != nil) {
-                println(error?.localizedDescription)
-
-            }
-        }
-        else {
-            let alert = UIAlertView(title: "No entry to save", message: "You have to start a session to save it", delegate: self, cancelButtonTitle: "Alright")
-            alert.show()
+//            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause, _summary: summary)
+//        
+//            var error: NSError?
+//            if (managedObjectContext?.save(&error) != nil) {
+//                println(error?.localizedDescription)
+//
+//            }
+//        }
+//        else {
+//            let alert = UIAlertView(title: "No entry to save", message: "You have to start a session to save it", delegate: self, cancelButtonTitle: "Alright")
+//            alert.show()
         }
         if intra {
             //backupManager.deleteBackup()
