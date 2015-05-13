@@ -13,12 +13,12 @@ class TimeEntry: NSManagedObject {
 
     @NSManaged var startDate: NSDate
     @NSManaged var activeTime: String
-    //@NSManaged var duration: String
+    @NSManaged var duration: String
     @NSManaged var endTime: String
     @NSManaged var pauseCount: NSNumber
     @NSManaged var pausedTime: String
     @NSManaged var startTime: String
-    @NSManaged var summary: String
+    @NSManaged var summary: String?
 
     class func createInManagedObjectContext(moc: NSManagedObjectContext, _startDate: NSDate, _startTime: String, _endTime: String,  _activeTime: String, _pausedTime: String, _pauseCount: NSNumber, _summary: String) -> TimeEntry {
         

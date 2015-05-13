@@ -608,6 +608,7 @@
                                             <outlet property="pausesLabel" destination="JzW-gm-7bs" id="Q1R-uZ-qT6"/>
                                             <outlet property="startLabel" destination="6YK-ns-97T" id="7yf-LR-7HU"/>
                                             <outlet property="summaryLabel" destination="eyp-Df-Qs2" id="NiP-72-oCB"/>
+                                            <outlet property="summaryLabelButtomContraint" destination="Iln-KU-TPt" id="2Ky-wa-tfZ"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

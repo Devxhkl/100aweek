@@ -118,6 +118,9 @@ class ViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func start(sender: AnyObject) {
         state = .Started
+        if stopped {
+            resetLabels()
+        }
         stopped = false
         locked = true
         lockMechanism(locked)
@@ -164,6 +167,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             self.pauseButton.hidden = true
             self.startButton.hidden = false
             sender.setTitle("reset", forState: .Normal)
+            pauseButton.setTitle("pause", forState: .Normal)
             
             paused = false
             stopped = true
@@ -454,20 +458,20 @@ class ViewController: UIViewController, UITextViewDelegate {
             println(summary)
         
         
-//            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause, _summary: summary)
-//        
-//            var error: NSError?
-//            if (managedObjectContext?.save(&error) != nil) {
-//                println(error?.localizedDescription)
-//
-//            }
-//        }
-//        else {
-//            let alert = UIAlertView(title: "No entry to save", message: "You have to start a session to save it", delegate: self, cancelButtonTitle: "Alright")
-//            alert.show()
+            let ret = TimeEntry.createInManagedObjectContext(managedObjectContext!, _startDate: startDate, _startTime: startTimeF, _endTime: endTimeF, _activeTime: timeActive!, _pausedTime: timePaused!, _pauseCount: countOfPause, _summary: summary)
+        
+            var error: NSError?
+            if (managedObjectContext?.save(&error) != nil) {
+                println(error?.localizedDescription)
+
+            }
+        }
+        else {
+            let alert = UIAlertView(title: "No entry to save", message: "You have to start a session to save it", delegate: self, cancelButtonTitle: "Alright")
+            alert.show()
         }
         if intra {
-            //backupManager.deleteBackup()
+            backupManager.deleteBackup()
         }
         
         backupManager = BackupManager()

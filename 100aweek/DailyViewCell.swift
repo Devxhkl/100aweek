@@ -16,6 +16,7 @@ class DailyViewCell: UITableViewCell {
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var endLabel: UILabel!
     @IBOutlet weak var summaryLabel: UILabel!
+    @IBOutlet weak var summaryLabelButtomContraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -39,7 +39,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 let str = dateFormat.stringFromDate(date)
                 startDates.append(str)
             }
-            
+            // Filter startDates to have only one of each day in the week
             for date in startDates {
                 var filter = Dictionary<String, Int>()
                 var len = startDates.count
@@ -54,6 +54,8 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                     }
                 }
             }
+            // Sort dates Descending to show the latest day on the top
+            startDates.sort({ $0.componentsSeparatedByString(" ")[1].toInt() > $1.componentsSeparatedByString(" ")[1].toInt() })
             
             for date in startDates {
                 let dayInfo = DayInfo()
@@ -98,7 +100,14 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.startLabel.text = entry.startTime.substringToIndex(advance(entry.startTime.startIndex, startEndIndex.toInt()! - 3))
         let endEndIndex = "\(entry.endTime.endIndex)"
         cell.endLabel.text = entry.endTime.substringToIndex(advance(entry.endTime.startIndex, endEndIndex.toInt()! - 3))
-        cell.summaryLabel.text = entry.summary
+        if let summaryText = entry.summary {
+            cell.summaryLabel.text = summaryText
+        }
+        else {
+            cell.summaryLabel.text = ""
+            cell.summaryLabelButtomContraint.constant = 0.0
+        }
+        
         
         return cell
     }

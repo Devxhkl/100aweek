@@ -37,8 +37,7 @@ class BackupManager: NSObject {
                 backupMan.time = json[0]["start"].doubleValue
                 backupMan.pauseTime = json[0]["paused"].doubleValue
                 backupMan.pausedCount = json[0]["pauses"].intValue
-                backupMan.ended = json[0]["end"].boolValue
-                
+                backupMan.ended = json[0]["pause"].boolValue
             }
         }
         return backupMan
@@ -56,9 +55,9 @@ class BackupManager: NSObject {
             let id = idFormat.stringFromDate(start).toInt()!
             let startDate = dateFormat.stringFromDate(start)
             let startTime = start.timeIntervalSinceReferenceDate
-            let data = "ID=\(id)&date=\(startDate)&start=\(startTime)&end=0"
+            let data = "ID=\(id)&date=\(startDate)&start=\(startTime)&pause=0"
         
-            //pushData(data)
+            pushData(data)
         }
     }
     
@@ -77,7 +76,7 @@ class BackupManager: NSObject {
             let data = "ID=\(id)&date=\(startDate)&paused=\(pausedTime)&pauses=\(pauseCount)"
         
        
-            //pushData(data)
+            pushData(data)
         }
     }
     

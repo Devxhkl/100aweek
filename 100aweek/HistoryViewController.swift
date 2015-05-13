@@ -31,10 +31,6 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         if let vc = todaily {
             vc.delegate = self
         }
-        if sectionInfoArray.count != 0 {
-            println(sectionInfoArray[0].headerCell.isOpen)
-
-        }
                 
         if sectionInfoArray.count == 0 || sectionInfoArray.count != self.numberOfSectionsInTableView(historyTable) {
             let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
