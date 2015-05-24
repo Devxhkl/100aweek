@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D136" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Backup" representedClassName="_00aweek.Backup" syncable="YES">
+        <attribute name="active" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="activeTime" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastStartInterval" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="pauseTime" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+    </entity>
+    <entity name="TimeEntry" representedClassName="_00aweek.TimeEntry" syncable="YES">
+        <attribute name="activeTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="endTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pauseCount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="pausedTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="summary" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Backup" positionX="-54" positionY="54" width="128" height="120"/>
+        <element name="TimeEntry" positionX="-63" positionY="-18" width="128" height="165"/>
+    </elements>
+</model>

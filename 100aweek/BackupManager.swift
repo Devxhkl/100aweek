@@ -10,12 +10,13 @@ import UIKit
 
 class BackupManager: NSObject {
     
+    let intra = Reachability.isConnectedToNetwork()
+
     var date: NSDate!
     var time: NSTimeInterval!
     var pauseTime: NSTimeInterval!
     var pausedCount: Int!
-    var ended: Bool!
-    let intra = Reachability.isConnectedToNetwork()
+    var pause: Bool!
     
     func getBackupFromBase() -> BackupManager {
         let backupMan = BackupManager()
@@ -25,7 +26,6 @@ class BackupManager: NSObject {
             let url = NSURL(string: "http://disobeythesystem.com/timer_backdown.php")
             if let data = NSData(contentsOfURL: url!) {
             
-
                 var error: NSError?
                 let json = JSON(data: data)
                 let lastBackupIndex = json.count - 1
@@ -37,9 +37,10 @@ class BackupManager: NSObject {
                 backupMan.time = json[0]["start"].doubleValue
                 backupMan.pauseTime = json[0]["paused"].doubleValue
                 backupMan.pausedCount = json[0]["pauses"].intValue
-                backupMan.ended = json[0]["pause"].boolValue
+                backupMan.pause = json[0]["pause"].boolValue
             }
         }
+        
         return backupMan
     }
     
@@ -57,7 +58,7 @@ class BackupManager: NSObject {
             let startTime = start.timeIntervalSinceReferenceDate
             let data = "ID=\(id)&date=\(startDate)&start=\(startTime)&pause=0"
         
-            pushData(data)
+//            pushData(data)
         }
     }
     
@@ -74,9 +75,8 @@ class BackupManager: NSObject {
         
             let id = idFormat.stringFromDate(startTime).toInt()!
             let data = "ID=\(id)&date=\(startDate)&paused=\(pausedTime)&pauses=\(pauseCount)"
-        
        
-            pushData(data)
+//            pushData(data)
         }
     }
     
