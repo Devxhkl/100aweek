@@ -38,18 +38,21 @@ extension Timers {
 
             if _backup.active.boolValue {
                 activeStartInterval = _backup.lastStartInterval.doubleValue
+                updateActiveTime()
+                timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateActiveTime", userInfo: nil, repeats: true)
                 
                 println("activeStartInterval == lastStartInterval == \(activeStartInterval)")
-                updateActiveTime()
+                
                 
                 notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime": "\(Formatter.formatIntervalToString(round(pauseTime)))", "changeTitle": true])
             }
             else {
                 pauseStartInterval = _backup.lastStartInterval.doubleValue
+                updatePauseTime()
+                timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updatePauseTime", userInfo: nil, repeats: true)
                 
                 println("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
-                updatePauseTime()
-                
+
                 notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
             }
         }
@@ -57,6 +60,7 @@ extension Timers {
     }
     
     func start() {
+        println("start")
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateActiveTime", userInfo: nil, repeats: true)
         activeStartInterval = NSDate.timeIntervalSinceReferenceDate()
         startDate = NSDate()
@@ -66,6 +70,7 @@ extension Timers {
     }
     
     func pause() {
+        println("pause")
         if timer != nil {
             timer?.invalidate()
             lastActiveInterval = 0
@@ -78,6 +83,7 @@ extension Timers {
     }
     
     func resume() {
+        println("resume")
         if timer != nil {
             timer?.invalidate()
             lastPauseInterval = 0

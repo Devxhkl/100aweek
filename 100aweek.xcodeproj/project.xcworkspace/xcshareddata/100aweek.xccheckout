@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>3E81C94A-1336-4916-B85A-4FB3D9C9ADE0</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>100aweek</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>22DD46373918475F275F66BA5484C32550B17E82</key>
 		<string>https://github.com/Devxhkl/100aweek.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>100aweek.xcodeproj/project.xcworkspace</string>
+	<string>100aweek.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>22DD46373918475F275F66BA5484C32550B17E82</key>
