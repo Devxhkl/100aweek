@@ -40,7 +40,7 @@ extension OfflineBackupManager {
     
     func createBackup(startDate: NSDate, lastStartInterval: NSTimeInterval) {
         
-        let backup = Backup.createBackup(managedObjectContext, _id: Formatter.dateToID(startDate), _lastStartInterval: lastStartInterval, _active: 1, _activeTime: 0, _pauseTime: 0)
+        let backup = Backup.createBackup(managedObjectContext, _startDate: startDate, _id: Formatter.dateToID(startDate), _lastStartInterval: lastStartInterval, _active: 1, _activeTime: 0, _pauseTime: 0)
         
 //        var error: NSError?
 //        if (managedObjectContext.save(&error)) {
@@ -66,5 +66,18 @@ extension OfflineBackupManager {
         else {
             println(error?.localizedDescription)
         }
+    }
+    
+    func delete() {
+        managedObjectContext.deleteObject(backup!)
+        
+        var error: NSError?
+        if managedObjectContext.save(&error) {
+            println("Backup deleted")
+        }
+        else {
+            println(error?.localizedDescription)
+        }
+
     }
 }

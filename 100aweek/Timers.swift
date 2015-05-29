@@ -41,19 +41,20 @@ extension Timers {
                 updateActiveTime()
                 timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateActiveTime", userInfo: nil, repeats: true)
                 
-                println("activeStartInterval == lastStartInterval == \(activeStartInterval)")
-                
-                
                 notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime": "\(Formatter.formatIntervalToString(round(pauseTime)))", "changeTitle": true])
+                println("activeStartInterval == lastStartInterval == \(activeStartInterval)")
+
+                startDate = _backup.startDate
             }
             else {
                 pauseStartInterval = _backup.lastStartInterval.doubleValue
                 updatePauseTime()
                 timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updatePauseTime", userInfo: nil, repeats: true)
                 
+                notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
                 println("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
 
-                notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
+                startDate = _backup.startDate
             }
         }
         
@@ -101,7 +102,6 @@ extension Timers {
         }
         
         endDate = NSDate()
-        save()
     }
     
     func updateActiveTime() {
@@ -124,7 +124,7 @@ extension Timers {
         notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime":"\(Formatter.formatIntervalToString(round(pauseTime)))"])
     }
     
-    func save() {
+    func save(summary: String) {
         
         let timeFormat = NSDateFormatter()
         timeFormat.dateFormat = "H:mm:ss"
@@ -132,11 +132,24 @@ extension Timers {
         let startTime = timeFormat.stringFromDate(startDate)
         let endTime = timeFormat.stringFromDate(endDate)
         
-        TimeEntry.createInManagedObjectContext((UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!, _startDate: startDate, _startTime: startTime, _endTime: endTime, _activeTime: Formatter.formatIntervalToString(activeTime), _pausedTime: Formatter.formatIntervalToString(pauseTime), _pauseCount: 0, _summary: "Placeholder")
+        TimeEntry.createInManagedObjectContext((UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!, _startDate: startDate, _startTime: startTime, _endTime: endTime, _activeTime: Formatter.formatIntervalToString(activeTime), _pausedTime: Formatter.formatIntervalToString(pauseTime), _pauseCount: 0, _summary: summary)
         
         var error: NSError?
         if (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext?.save(&error) != nil {
             println("Saved")
+            
+            activeStartInterval = 0
+            pauseStartInterval = 0
+            activeTime = 0
+            lastActiveInterval = 0
+            pauseTime = 0
+            lastPauseInterval = 0
+            active = false
+            
+            notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime":"\(Formatter.formatIntervalToString(round(activeTime)))"])
+            notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime":"\(Formatter.formatIntervalToString(round(pauseTime)))"])
+            
+            backupManager.delete()
         }
     }
 }
