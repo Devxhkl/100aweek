@@ -141,7 +141,7 @@ extension Timers {
         let percentage = Int((intra / daily) * 100)
         
         if percentage > dailyPercentage {
-            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["daily": "\(percentage)"])
+            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["today": "\(percentage) %"])
             dailyPercentage = percentage
         }
         
