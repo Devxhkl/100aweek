@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class Timers: NSObject {
     
@@ -19,6 +20,9 @@ class Timers: NSObject {
     var lastActiveInterval = NSTimeInterval()
     var pauseTime = NSTimeInterval()
     var lastPauseInterval = NSTimeInterval()
+    var dailyPercentage = 0
+    var weeklyPercentage = 0
+    var weekEntries = [TimeEntry]()
     var active = true
         
     let notificationCenter = NSNotificationCenter.defaultCenter()
@@ -27,14 +31,18 @@ class Timers: NSObject {
 
 extension Timers {
     
+//    MARK: - Backup
+    
     func backup() {
         if backupManager.requestBackup() {
             let _backup = backupManager.getBackup()
-            println("_backup lastStartInterval: \(_backup.lastStartInterval), active: \(_backup.active)")
+//            println("_backup lastStartInterval: \(_backup.lastStartInterval), active: \(_backup.active)")
             
             activeTime = _backup.activeTime.doubleValue
             pauseTime = _backup.pauseTime.doubleValue
             active = _backup.active.boolValue
+            startDate = _backup.startDate
+//            println("Active: \(activeTime), Pause: \(pauseTime), a/p: \(active), sinta: \(lastActiveInterval), pintra: \(lastPauseInterval)")
 
             if _backup.active.boolValue {
                 activeStartInterval = _backup.lastStartInterval.doubleValue
@@ -43,8 +51,6 @@ extension Timers {
                 
                 notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime": "\(Formatter.formatIntervalToString(round(pauseTime)))", "changeTitle": true])
                 println("activeStartInterval == lastStartInterval == \(activeStartInterval)")
-
-                startDate = _backup.startDate
             }
             else {
                 pauseStartInterval = _backup.lastStartInterval.doubleValue
@@ -53,12 +59,14 @@ extension Timers {
                 
                 notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
                 println("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
-
-                startDate = _backup.startDate
             }
+            
+            percentage()
         }
         
     }
+    
+//    MARK: - Actions
     
     func start() {
         println("start")
@@ -80,7 +88,7 @@ extension Timers {
         pauseStartInterval = NSDate.timeIntervalSinceReferenceDate()
         active = false
         
-        backupManager.updateBackup(pauseStartInterval, active: false, activeTime: activeTime, pauseTime: pauseTime)
+        backupManager.updateBackup(pauseStartInterval, active: active, activeTime: activeTime, pauseTime: pauseTime)
     }
     
     func resume() {
@@ -93,7 +101,7 @@ extension Timers {
         activeStartInterval = NSDate.timeIntervalSinceReferenceDate()
         active = true
         
-        backupManager.updateBackup(activeStartInterval, active: true, activeTime: activeTime, pauseTime: pauseTime)
+        backupManager.updateBackup(activeStartInterval, active: active, activeTime: activeTime, pauseTime: pauseTime)
     }
     
     func stop() {
@@ -104,6 +112,8 @@ extension Timers {
         endDate = NSDate()
     }
     
+//    MARK: - Updating center
+    
     func updateActiveTime() {
         let nowInterval = NSDate.timeIntervalSinceReferenceDate()
         let currentActiveInterval = (nowInterval - activeStartInterval)
@@ -112,6 +122,7 @@ extension Timers {
         lastActiveInterval = currentActiveInterval
         
         notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime":"\(Formatter.formatIntervalToString(round(activeTime)))"])
+        percentage()
     }
     
     func updatePauseTime() {
@@ -123,6 +134,62 @@ extension Timers {
         
         notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime":"\(Formatter.formatIntervalToString(round(pauseTime)))"])
     }
+    
+    func percentage() {
+        let daily: CGFloat = (100 * 3600) / 7
+        let intra = CGFloat(activeTime)
+        let percentage = Int((intra / daily) * 100)
+        
+        if percentage > dailyPercentage {
+            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["daily": "\(percentage)"])
+            dailyPercentage = percentage
+        }
+        
+        let helper = TimeHelperClass()
+        if weekEntries.isEmpty {
+            let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
+            let fetchResults = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as! [TimeEntry]
+            
+            
+            let today = NSDate()
+            var thisWeek = "0"
+            if let lastDay = fetchResults.last {
+                thisWeek = helper.getWeekOfYear(lastDay.startDate)
+            }
+            
+            for entry in fetchResults {
+                if helper.getWeekOfYear(entry.startDate) == thisWeek && helper.getWeekOfYear(today) == thisWeek {
+                    weekEntries.append(entry)
+                }
+            }
+        }
+        
+        var newWeek = true
+        var weeklyToday = [String]()
+        if weekEntries.count > 0 {
+            let times = helper.getSummedTimes(weekEntries)
+            let activeHoursArr = times[0].componentsSeparatedByString(" : ")
+            newWeek = false
+            
+            let hours = Double(activeHoursArr[0].toInt()! * 3600)
+            let minutes = Double(activeHoursArr[1].toInt()! * 60)
+            let seconds = Double(activeHoursArr[2].toInt()!)
+            
+            weeklyToday = Formatter.formatIntervalToString(hours + minutes + seconds + activeTime).componentsSeparatedByString(" : ")
+        }
+        
+        
+//        if !newWeek && weeklyToday[0].toInt() >= 100 {
+//            weeklyPertageLabel.textColor = UIColor.yellowColor()
+//            weeklyLabel.textColor = UIColor.yellowColor()
+//        }
+        
+        if weeklyToday[0].toInt() > weeklyPercentage || !newWeek {
+            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["weekly": "\(weeklyToday[0]) %"])
+        }
+    }
+    
+//    MARK: - TO BE CLEANED!!
     
     func save(summary: String) {
         

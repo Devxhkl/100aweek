@@ -23,6 +23,7 @@ extension OfflineBackupManager {
         let results = managedObjectContext.executeFetchRequest(request, error: nil) as! [Backup]
         
         if let _backup = results.first {
+            println(_backup.active)
             backup = _backup
             println("Backup is available.")
             return true
@@ -31,7 +32,6 @@ extension OfflineBackupManager {
             println("No backup available.")
             return false
         }
-        
     }
     
     func getBackup() -> Backup {
@@ -40,23 +40,23 @@ extension OfflineBackupManager {
     
     func createBackup(startDate: NSDate, lastStartInterval: NSTimeInterval) {
         
-        let backup = Backup.createBackup(managedObjectContext, _startDate: startDate, _id: Formatter.dateToID(startDate), _lastStartInterval: lastStartInterval, _active: 1, _activeTime: 0, _pauseTime: 0)
+        backup = Backup.createBackup(managedObjectContext, _startDate: startDate, _id: Formatter.dateToID(startDate), _lastStartInterval: lastStartInterval, _active: 1, _activeTime: 0, _pauseTime: 0)
         
-//        var error: NSError?
-//        if (managedObjectContext.save(&error)) {
-//            println("Initial backup created.")
-//        }
-//        else {
-//            println(error?.localizedDescription)
-//        }
+        var error: NSError?
+        if (managedObjectContext.save(&error)) {
+            println("Initial backup created.")
+        }
+        else {
+            println(error?.localizedDescription)
+        }
     }
     
     func updateBackup(lastStartInterval: NSTimeInterval, active: Bool, activeTime: NSTimeInterval, pauseTime: NSTimeInterval) {
-        if let _backup = backup {
-            _backup.lastStartInterval = lastStartInterval
-            _backup.active = active
-            _backup.activeTime = activeTime
-            _backup.pauseTime = pauseTime
+        if backup != nil {
+            backup!.lastStartInterval = lastStartInterval
+            backup!.active = active
+            backup!.activeTime = activeTime
+            backup!.pauseTime = pauseTime
         }
         
         var error: NSError?
@@ -74,10 +74,10 @@ extension OfflineBackupManager {
         var error: NSError?
         if managedObjectContext.save(&error) {
             println("Backup deleted")
+            backup = nil
         }
         else {
             println(error?.localizedDescription)
         }
-
     }
 }

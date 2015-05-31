@@ -21,6 +21,9 @@ class InitialViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var summaryTextView: UITextView!
     @IBOutlet weak var summaryTextViewPlaceholder: UILabel!
     @IBOutlet weak var summaryViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var todayPercentageLabel: UILabel!
+    @IBOutlet weak var weeklyPercentageLabel: UILabel!
+    
     let timers = Timers()
     let customTransitionManager = WeeklyCustomTransition()
     
@@ -42,6 +45,7 @@ class InitialViewController: UIViewController, UITextViewDelegate {
         let notificationCenter = NSNotificationCenter.defaultCenter()
         notificationCenter.addObserver(self, selector: "updateActiveTimeLabel:", name: "activeTimeLabelNotificationKey", object: nil)
         notificationCenter.addObserver(self, selector: "updatePauseTimeLabel:", name: "pauseTimeLabelNotificationKey", object: nil)
+        notificationCenter.addObserver(self, selector: "updatePercentageLabel:", name: "percentageLabelNotificationKey", object: nil)
         notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         
         summaryTextView.delegate = self
@@ -83,6 +87,9 @@ class InitialViewController: UIViewController, UITextViewDelegate {
     @IBAction func done(sender: AnyObject) {
         timers.save(summaryTextView.text)
         
+        startButton.hidden = false
+        resumeButton.hidden = true
+        pauseButton.hidden = true
         self.view.endEditing(true)
         summaryView.hidden = true
         summaryTextViewPlaceholder.hidden = false
@@ -113,6 +120,16 @@ extension InitialViewController {
             pauseButton.hidden = false
             locked = true
             lockMechanism(locked)
+        }
+    }
+    
+    func updatePercentageLabel(notification: NSNotification) {
+        if let today = notification.userInfo!["today"] as? String {
+            todayPercentageLabel.text = today
+        }
+        
+        if let weekly = notification.userInfo!["weekly"] as? String {
+            weeklyPercentageLabel.text = weekly
         }
     }
     
