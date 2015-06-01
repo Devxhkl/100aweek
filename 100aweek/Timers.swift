@@ -166,7 +166,7 @@ extension Timers {
         
         var newWeek = true
         var weeklyToday = [String]()
-        if weekEntries.count > 0 {
+        if  !weekEntries.isEmpty {
             let times = helper.getSummedTimes(weekEntries)
             let activeHoursArr = times[0].componentsSeparatedByString(" : ")
             newWeek = false
@@ -176,17 +176,23 @@ extension Timers {
             let seconds = Double(activeHoursArr[2].toInt()!)
             
             weeklyToday = Formatter.formatIntervalToString(hours + minutes + seconds + activeTime).componentsSeparatedByString(" : ")
+            
+            if weeklyToday[0].toInt() > weeklyPercentage {
+                notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["weekly": "\(weeklyToday[0]) %"])
+            }
         }
         
+        if newWeek {
+            let mondayHours = Formatter.formatIntervalToString(activeTime).componentsSeparatedByString(" : ")
+            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["weekly": "\(mondayHours[0]) %"])
+        }
         
 //        if !newWeek && weeklyToday[0].toInt() >= 100 {
 //            weeklyPertageLabel.textColor = UIColor.yellowColor()
 //            weeklyLabel.textColor = UIColor.yellowColor()
 //        }
         
-        if weeklyToday[0].toInt() > weeklyPercentage || !newWeek {
-            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["weekly": "\(weeklyToday[0]) %"])
-        }
+        
     }
     
 //    MARK: - TO BE CLEANED!!
@@ -211,6 +217,9 @@ extension Timers {
             lastActiveInterval = 0
             pauseTime = 0
             lastPauseInterval = 0
+            dailyPercentage = 0
+            weeklyPercentage = 0
+            weekEntries = [TimeEntry]()
             active = false
             
             notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime":"\(Formatter.formatIntervalToString(round(activeTime)))"])
