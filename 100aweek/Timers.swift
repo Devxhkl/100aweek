@@ -60,10 +60,8 @@ extension Timers {
                 notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
                 println("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
             }
-            
-            percentage()
         }
-        
+        percentage()
     }
     
 //    MARK: - Actions
@@ -221,6 +219,7 @@ extension Timers {
             weeklyPercentage = 0
             weekEntries = [TimeEntry]()
             active = false
+            percentage()
             
             notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime":"\(Formatter.formatIntervalToString(round(activeTime)))"])
             notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime":"\(Formatter.formatIntervalToString(round(pauseTime)))"])
