@@ -93,6 +93,7 @@ class InitialViewController: UIViewController, UITextViewDelegate {
         self.view.endEditing(true)
         summaryView.hidden = true
         summaryTextViewPlaceholder.hidden = false
+        summaryTextView.text = ""
     }
     
     @IBAction func unwindToTimer(segue: UIStoryboardSegue) {

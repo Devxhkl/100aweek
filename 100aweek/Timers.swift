@@ -223,6 +223,7 @@ extension Timers {
             
             notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime":"\(Formatter.formatIntervalToString(round(activeTime)))"])
             notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime":"\(Formatter.formatIntervalToString(round(pauseTime)))"])
+            notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["today": "0 %"])
             
             backupManager.delete()
         }
