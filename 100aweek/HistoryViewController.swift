@@ -203,7 +203,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
             daily.weekInfo = sectionInfo
             daily.todaily = todaily
             todaily?.delegate = nil
-            daily.transitioningDelegate = dailyTransitionManager
+//            daily.transitioningDelegate = dailyTransitionManager
         }
     }
     

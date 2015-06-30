@@ -27,7 +27,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if let vc = todaily {
             vc.delegate = self
         }
-
+        
         if dayInfoArray.count == 0 || dayInfoArray.count != self.numberOfSectionsInTableView(dailyTable) {
             
             var startDates = [String]()
@@ -71,7 +71,6 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 dayInfoArray.append(dayInfo)
             }
-
         }
     }
     
@@ -88,8 +87,9 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! DailyViewCell
-        
+
         let dayInfo = dayInfoArray[indexPath.section]
         let entry = dayInfo.timing
         
@@ -116,7 +116,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         let header = tableView.dequeueReusableCellWithIdentifier("Header") as! DailyHeaderCell
         header.frame = CGRect(x: header.frame.origin.x, y: header.frame.origin.y, width: dailyTable.frame.width, height: 85)
         header.delegate = self
-        
+
         let dayInfo = dayInfoArray[section]
         
         let dayArr = getDay(dayInfo.timing.startDate).componentsSeparatedByString(" ")
