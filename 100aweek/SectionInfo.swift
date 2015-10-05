@@ -22,7 +22,7 @@ class SectionInfo: NSObject {
         let second: NSTimeInterval = 1
         
         calendar.firstWeekday = 2
-        calendar.rangeOfUnit(.CalendarUnitWeekOfYear, startDate: &start, interval: &interval, forDate: date)
+        calendar.rangeOfUnit(.WeekOfYear, startDate: &start, interval: &interval, forDate: date)
         end = start?.dateByAddingTimeInterval(interval - second)
         
         let startDateFormat = NSDateFormatter()
@@ -41,15 +41,15 @@ class SectionInfo: NSObject {
         for entry in timingsArr {
             let time = entry.activeTime.componentsSeparatedByString(" : ")
                 
-            if time[0].toInt() > 14 {
+            if Int(time[0]) > 14 {
                 successTimings++
             }
-            else if time[0].toInt() == 14 {
-                if time[1].toInt() > 17 {
+            else if Int(time[0]) == 14 {
+                if Int(time[1]) > 17 {
                     successTimings++
                 }
-                else if time[1].toInt() == 17 {
-                    if time[2].toInt() >= 8 {
+                else if Int(time[1]) == 17 {
+                    if Int(time[2]) >= 8 {
                         successTimings++
                     }
                 }

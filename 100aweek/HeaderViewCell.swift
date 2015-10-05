@@ -13,7 +13,7 @@ protocol HeaderCellDelegate {
     func closeSection(sectionHeaderCell: HeaderViewCell, section: Int)
 }
 
-class HeaderViewCell: UITableViewCell, UIGestureRecognizerDelegate {
+class HeaderViewCell: UITableViewCell {
 
     @IBOutlet weak var weekLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!

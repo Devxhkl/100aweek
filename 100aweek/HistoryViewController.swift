@@ -17,7 +17,7 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
     
     var sectionInfoArray = [SectionInfo]()
     var todaily: ViewController?
-    let dailyTransitionManager = DailyCustomTransition()
+//    let dailyTransitionManager = DailyCustomTransition()
     let helper = TimeHelperClass()
     var selectedCell = TimingViewCell()
     
@@ -31,83 +31,83 @@ class HistoryViewController: UIViewController, UITableViewDataSource, UITableVie
         if let vc = todaily {
             vc.delegate = self
         }
-                
+        
         if sectionInfoArray.count == 0 || sectionInfoArray.count != self.numberOfSectionsInTableView(historyTable) {
             let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
             let helper = TimeHelperClass()
             
             let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
-            let fetchResults = managedObjectContext?.executeFetchRequest(fetchRequest, error: nil) as? [TimeEntry]
-        
-            var fetched = fetchResults!
-            
-            var weeks = [String]()
-            var startDates = [String]()
-            for entry in fetched {
-                let date = entry.startDate
-                let dateFormat = NSDateFormatter()
-                dateFormat.dateFormat = "d MMM yy"
-                let str = dateFormat.stringFromDate(date)
-                startDates.append(str)
-                let weekOfYear = helper.getWeekOfYear(date)
+            do {
+                let fetchResults = try! managedObjectContext?.executeFetchRequest(fetchRequest) as? [TimeEntry]
                 
-                weeks.append(weekOfYear)
-            }
-            weeks = helper.removeDuplicateElements(weeks)
-            weeks.sort( { $0.toInt() > $1.toInt() })
-            
-            var merge = [String]()
-            var last = ""
-            for date in startDates {
-                if date == last {
-                    merge.append(date)
-                }
-                last = date
-            }
-            merge = helper.removeDuplicateElements(merge)
-            
-            var allDuplicates = [[TimeEntry]]()
-            for duplicate in merge {
+                var fetched = fetchResults!
                 
-                var duplicates = [TimeEntry]()
-                var cou = fetched.count
-                
-                for var index = 0; index < cou; index++  {
-                    let entry = fetched[index]
+                var weeks = [String]()
+                var startDates = [String]()
+                for entry in fetched {
                     let date = entry.startDate
                     let dateFormat = NSDateFormatter()
                     dateFormat.dateFormat = "d MMM yy"
                     let str = dateFormat.stringFromDate(date)
+                    startDates.append(str)
+                    let weekOfYear = helper.getWeekOfYear(date)
                     
-                    if str == duplicate {
-                        duplicates.append(entry)
-                        fetched.removeAtIndex(index--)
-                        cou--
-                    }
+                    weeks.append(weekOfYear)
                 }
-                if duplicates.count > 0 {
-                    allDuplicates.append(duplicates)
-                }
-            }
-            
-            var mergedEntries = helper.mergeDaysMechanism(allDuplicates) + fetched
-            mergedEntries.sort( { $0.startDate.compare($1.startDate) == NSComparisonResult.OrderedAscending })
-            
-            for weekNumber in weeks {
-                let sectionInfo = SectionInfo()
-                sectionInfo.isOpen = false
+                weeks = helper.removeDuplicateElements(weeks)
+                weeks.sortInPlace( { Int($0) > Int($1) } )
                 
-                for entry in mergedEntries {
-                    let weekNum = helper.getWeekOfYear(entry.startDate)
-                    if weekNum == weekNumber {
-                        sectionInfo.timings.append(entry)
+                var merge = [String]()
+                var last = ""
+                for date in startDates {
+                    if date == last {
+                        merge.append(date)
+                    }
+                    last = date
+                }
+                merge = helper.removeDuplicateElements(merge)
+                
+                var allDuplicates = [[TimeEntry]]()
+                for duplicate in merge {
+                    
+                    var duplicates = [TimeEntry]()
+                    var cou = fetched.count
+                    
+                    for var index = 0; index < cou; index++  {
+                        let entry = fetched[index]
+                        let date = entry.startDate
+                        let dateFormat = NSDateFormatter()
+                        dateFormat.dateFormat = "d MMM yy"
+                        let str = dateFormat.stringFromDate(date)
+                        
+                        if str == duplicate {
+                            duplicates.append(entry)
+                            fetched.removeAtIndex(index--)
+                            cou--
+                        }
+                    }
+                    if duplicates.count > 0 {
+                        allDuplicates.append(duplicates)
                     }
                 }
-                sectionInfoArray.append(sectionInfo)
+                
+                var mergedEntries = helper.mergeDaysMechanism(allDuplicates) + fetched
+                mergedEntries.sortInPlace( { $0.startDate.compare($1.startDate) == NSComparisonResult.OrderedAscending })
+                
+                for weekNumber in weeks {
+                    let sectionInfo = SectionInfo()
+                    sectionInfo.isOpen = false
+                    
+                    for entry in mergedEntries {
+                        let weekNum = helper.getWeekOfYear(entry.startDate)
+                        if weekNum == weekNumber {
+                            sectionInfo.timings.append(entry)
+                        }
+                    }
+                    sectionInfoArray.append(sectionInfo)
+                }
             }
-            
         }
-        
     }
     
     override func prefersStatusBarHidden() -> Bool {

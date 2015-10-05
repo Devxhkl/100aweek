@@ -13,7 +13,7 @@ protocol DailyHeadDelegate {
     func closeSection(sectionHeaderCell: DailyHeaderCell, section: Int)
 }
 
-class DailyHeaderCell: UITableViewCell, UIGestureRecognizerDelegate {
+class DailyHeaderCell: UITableViewCell {
 
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!

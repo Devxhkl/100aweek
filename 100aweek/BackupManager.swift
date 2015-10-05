@@ -10,7 +10,7 @@ import UIKit
 
 class BackupManager: NSObject {
     
-    let intra = Reachability.isConnectedToNetwork()
+    let intra = false
 
     var date: NSDate!
     var time: NSTimeInterval!
@@ -53,7 +53,7 @@ class BackupManager: NSObject {
             dateFormat.dateFormat = "yyyy-MM-dd HH:mm:ss"
             dateFormat.timeZone = NSTimeZone.localTimeZone()
         
-            let id = idFormat.stringFromDate(start).toInt()!
+            let id = Int(idFormat.stringFromDate(start))!
             let startDate = dateFormat.stringFromDate(start)
             let startTime = start.timeIntervalSinceReferenceDate
             let data = "ID=\(id)&date=\(startDate)&start=\(startTime)&pause=0"
@@ -73,7 +73,7 @@ class BackupManager: NSObject {
 
             let startDate = dateFormat.stringFromDate(startTime)
         
-            let id = idFormat.stringFromDate(startTime).toInt()!
+            let id = Int(idFormat.stringFromDate(startTime))!
             let data = "ID=\(id)&date=\(startDate)&paused=\(pausedTime)&pauses=\(pauseCount)"
        
 //            pushData(data)
@@ -91,8 +91,8 @@ class BackupManager: NSObject {
         
         let queue = NSOperationQueue()
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { response, data, error in
-            let returned = NSString(data: data, encoding: NSUTF8StringEncoding)!
-            println(returned)
+            let returned = NSString(data: data!, encoding: NSUTF8StringEncoding)!
+            print(returned)
         })
         
     }
@@ -104,8 +104,8 @@ class BackupManager: NSObject {
         
         let queue = NSOperationQueue()
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { response, data, error in
-            let returned = NSString(data: data, encoding: NSUTF8StringEncoding)!
-            println(returned)
+            let returned = NSString(data: data!, encoding: NSUTF8StringEncoding)!
+            print(returned)
         })
 
     }

@@ -25,7 +25,7 @@ class InitialViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var weeklyPercentageLabel: UILabel!
     
     let timers = Timers()
-    let customTransitionManager = WeeklyCustomTransition()
+//    let customTransitionManager = WeeklyCustomTransition()
     
     var fresh = true
     var locked = false
@@ -150,8 +150,7 @@ extension InitialViewController {
     }
 
     // MARK: - TO BE CLEANED!!!!
-    
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         view.endEditing(true)
         summaryViewBottomConstraint.constant = 0.0
         
@@ -162,6 +161,7 @@ extension InitialViewController {
         if summaryTextView.text == "" {
             summaryTextViewPlaceholder.hidden = false
         }
+
     }
     
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
@@ -187,7 +187,7 @@ extension InitialViewController {
     
     func keyboardWillShow(sender: NSNotification) {
         if let userInfo = sender.userInfo {
-            if let keyboardHeight = userInfo[UIKeyboardFrameEndUserInfoKey]?.CGRectValue().size.height {
+            if let keyboardHeight = userInfo[UIKeyboardFrameEndUserInfoKey]?.CGRectValue.size.height {
                 summaryViewBottomConstraint.constant = keyboardHeight
                 UIView.animateWithDuration(0.25, animations: {
                     self.view.layoutIfNeeded()

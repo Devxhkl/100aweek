@@ -40,11 +40,11 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 startDates.append(str)
             }
             // Filter startDates to have only one of each day in the week
-            for date in startDates {
+            for _ in startDates {
                 var filter = Dictionary<String, Int>()
                 var len = startDates.count
                 for var index = 0; index < len; ++index {
-                    var value = "\(startDates[index])"
+                    let value = "\(startDates[index])"
                     if filter[value] != nil {
                         startDates.removeAtIndex(index--)
                         len--
@@ -55,7 +55,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
             // Sort dates Descending to show the latest day on the top
-            startDates.sort({ $0.componentsSeparatedByString(" ")[1].toInt() > $1.componentsSeparatedByString(" ")[1].toInt() })
+            startDates.sortInPlace({ Int($0.componentsSeparatedByString(" ")[1]) > Int($1.componentsSeparatedByString(" ")[1]) })
             
             for date in startDates {
                 let dayInfo = DayInfo()
@@ -97,9 +97,9 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.pausedLabel.text = entry.pausedTime
         cell.pausesLabel.text = "\(entry.pauseCount)"
         let startEndIndex = "\(entry.startTime.endIndex)"
-        cell.startLabel.text = entry.startTime.substringToIndex(advance(entry.startTime.startIndex, startEndIndex.toInt()! - 3))
+        cell.startLabel.text = entry.startTime.substringToIndex(entry.startTime.startIndex.advancedBy(-3))
         let endEndIndex = "\(entry.endTime.endIndex)"
-        cell.endLabel.text = entry.endTime.substringToIndex(advance(entry.endTime.startIndex, endEndIndex.toInt()! - 3))
+        cell.endLabel.text = entry.endTime.substringToIndex(entry.endTime.startIndex.advancedBy(-3))
         if let summaryText = entry.summary {
             cell.summaryLabel.text = summaryText
         }
@@ -130,7 +130,7 @@ class DailyTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if dailySuccess.over {
             header.rateLabel.textColor = UIColor.greenColor()
         }
-        else if succArr[0].toInt() >= 80 && succArr[0].toInt() < 100 {
+        else if Int(succArr[0]) >= 80 && Int(succArr[0]) < 100 {
             header.rateLabel.textColor = UIColor.yellowColor()
         }
         else {

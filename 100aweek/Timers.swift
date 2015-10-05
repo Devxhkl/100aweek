@@ -50,7 +50,7 @@ extension Timers {
                 timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateActiveTime", userInfo: nil, repeats: true)
                 
                 notificationCenter.postNotificationName("pauseTimeLabelNotificationKey", object: nil, userInfo: ["pauseTime": "\(Formatter.formatIntervalToString(round(pauseTime)))", "changeTitle": true])
-                println("activeStartInterval == lastStartInterval == \(activeStartInterval)")
+                print("activeStartInterval == lastStartInterval == \(activeStartInterval)")
             }
             else {
                 pauseStartInterval = _backup.lastStartInterval.doubleValue
@@ -58,7 +58,7 @@ extension Timers {
                 timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updatePauseTime", userInfo: nil, repeats: true)
                 
                 notificationCenter.postNotificationName("activeTimeLabelNotificationKey", object: nil, userInfo: ["activeTime": "\(Formatter.formatIntervalToString(round(activeTime)))", "changeTitle": true])
-                println("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
+                print("pauseStartInterval == lastStartInterval == \(pauseStartInterval)")
             }
         }
         percentage()
@@ -67,7 +67,7 @@ extension Timers {
 //    MARK: - Actions
     
     func start() {
-        println("start")
+        print("start")
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateActiveTime", userInfo: nil, repeats: true)
         activeStartInterval = NSDate.timeIntervalSinceReferenceDate()
         startDate = NSDate()
@@ -77,7 +77,7 @@ extension Timers {
     }
     
     func pause() {
-        println("pause")
+        print("pause")
         if timer != nil {
             timer?.invalidate()
             lastActiveInterval = 0
@@ -90,7 +90,7 @@ extension Timers {
     }
     
     func resume() {
-        println("resume")
+        print("resume")
         if timer != nil {
             timer?.invalidate()
             lastPauseInterval = 0
@@ -146,18 +146,19 @@ extension Timers {
         let helper = TimeHelperClass()
         if weekEntries.isEmpty {
             let fetchRequest = NSFetchRequest(entityName: "TimeEntry")
-            let fetchResults = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!.executeFetchRequest(fetchRequest, error: nil) as! [TimeEntry]
-            
-            
-            let today = NSDate()
-            var thisWeek = "0"
-            if let lastDay = fetchResults.last {
-                thisWeek = helper.getWeekOfYear(lastDay.startDate)
-            }
-            
-            for entry in fetchResults {
-                if helper.getWeekOfYear(entry.startDate) == thisWeek && helper.getWeekOfYear(today) == thisWeek {
-                    weekEntries.append(entry)
+            do {
+                let fetchResults = try! (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!.executeFetchRequest(fetchRequest)
+                
+                let today = NSDate()
+                var thisWeek = "0"
+                if let lastDay = fetchResults.last {
+                    thisWeek = helper.getWeekOfYear(lastDay.startDate)
+                }
+                
+                for entry in fetchResults {
+                    if helper.getWeekOfYear(entry.startDate) == thisWeek && helper.getWeekOfYear(today) == thisWeek {
+                        weekEntries.append(entry as! TimeEntry)
+                    }
                 }
             }
         }
@@ -169,13 +170,13 @@ extension Timers {
             let activeHoursArr = times[0].componentsSeparatedByString(" : ")
             newWeek = false
             
-            let hours = Double(activeHoursArr[0].toInt()! * 3600)
-            let minutes = Double(activeHoursArr[1].toInt()! * 60)
-            let seconds = Double(activeHoursArr[2].toInt()!)
+            let hours = Double(Int(activeHoursArr[0])! * 3600)
+            let minutes = Double(Int(activeHoursArr[1])! * 60)
+            let seconds = Double(Int(activeHoursArr[2])!)
             
             weeklyToday = Formatter.formatIntervalToString(hours + minutes + seconds + activeTime).componentsSeparatedByString(" : ")
             
-            if weeklyToday[0].toInt() > weeklyPercentage {
+            if Int(weeklyToday[0]) > weeklyPercentage {
                 notificationCenter.postNotificationName("percentageLabelNotificationKey", object: nil, userInfo: ["weekly": "\(weeklyToday[0]) %"])
             }
         }
@@ -205,9 +206,10 @@ extension Timers {
         
         TimeEntry.createInManagedObjectContext((UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!, _startDate: startDate, _startTime: startTime, _endTime: endTime, _activeTime: Formatter.formatIntervalToString(activeTime), _pausedTime: Formatter.formatIntervalToString(pauseTime), _pauseCount: 0, _summary: summary)
         
-        var error: NSError?
-        if (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext?.save(&error) != nil {
-            println("Saved")
+        do {
+            try! (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext?.save()
+            
+            print("Saved")
             
             activeStartInterval = 0
             pauseStartInterval = 0

@@ -13,7 +13,7 @@ class TimeHelperClass: NSObject {
     func getWeekOfYear(date: NSDate) -> String {
         let calendar = NSCalendar.currentCalendar()
         calendar.firstWeekday = 2
-        let components = calendar.components(.CalendarUnitWeekOfYear, fromDate: date)
+        let components = calendar.components(.WeekOfYear, fromDate: date)
         
         return "\(components.weekOfYear)"
     }
@@ -31,14 +31,14 @@ class TimeHelperClass: NSObject {
         
         for entry in timingsArr {
             let active = entry.activeTime.componentsSeparatedByString(" : ")
-            activeHours += active[0].toInt()!
-            activeMin += active[1].toInt()!
-            activeSec += active[2].toInt()!
+            activeHours += Int(active[0])!
+            activeMin += Int(active[1])!
+            activeSec += Int(active[2])!
             
             let paused = entry.pausedTime.componentsSeparatedByString(" : ")
-            pausedHours += paused[0].toInt()!
-            pausedMin += paused[1].toInt()!
-            pausedSec += paused[2].toInt()!
+            pausedHours += Int(paused[0])!
+            pausedMin += Int(paused[1])!
+            pausedSec += Int(paused[2])!
             
             pausesTot += Int(entry.pauseCount)
         }
@@ -87,7 +87,7 @@ class TimeHelperClass: NSObject {
         var filter = Dictionary<String,Int>()
         var len = array.count
         for var index = 0; index < len  ;++index {
-            var value = "\(array[index])"
+            let value = "\(array[index])"
             if filter[value] != nil {
                 array.removeAtIndex(index--)
                 len--
@@ -111,7 +111,7 @@ class TimeHelperClass: NSObject {
             let eTime = day[(day.count - 1)].endTime
             let aTime = summed[0]
             let pTime = summed[1]
-            let pCount = summed[2].toInt()!
+            let pCount = Int(summed[2])!
             
             let entry = TimeEntry.createWithoutManagedObject(sDate, _startTime: sTime, _endTime: eTime, _activeTime: aTime, _pausedTime: pTime, _pauseCount: pCount, _summary: "")
             

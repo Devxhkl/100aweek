@@ -20,9 +20,9 @@ class DayInfo: NSObject {
     
         let daily: CGFloat = (100 * 3600) / 7
     
-        interval += CGFloat(timeArr[0].toInt()! * 3600)
-        interval += CGFloat(timeArr[1].toInt()! * 60)
-        interval += CGFloat(timeArr[2].toInt()!)
+        interval += CGFloat(Int(timeArr[0])! * 3600)
+        interval += CGFloat(Int(timeArr[1])! * 60)
+        interval += CGFloat(Int(timeArr[2])!)
     
         let percentage = Int((interval / daily) * 100)
         var over = false
